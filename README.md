@@ -5,5 +5,5 @@ El presente proyecto tiene como finalidad facilitar desarrollar un sistema de so
 <br>
 
 <p align="center">
-  <img src="docs/assets/github-asset.png">
+  <img src="docs/assets/120x120-github-asset.png">
 </p>
