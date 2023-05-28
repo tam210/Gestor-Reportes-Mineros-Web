@@ -1,15 +1,15 @@
 "use client"; // This is a client component 👈🏽
-import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-
-function page() {
-  const router = useRouter;
+function Page() {
+  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validEmail, setValidEmail] = useState(true);
   const [validPassword, setValidPassword] = useState(true);
+  const [validUser, setValidUser] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -22,21 +22,19 @@ function page() {
   const handleLogin = async (event) =>{
     const userExists = await checkUser(email);
     const isPasswordCorrect = await checkPassword(email,password);
-    if (validEmail && validPassword){
-      //inicio de sesión
-      router.push('/menu');
-    }
   };
 
-  const checkUser = async (email)=>{
-
+  const checkUser = (email)=>{
+    //agregar validacion del email
   };
 
-  const checkPassword = async (email,password)=>{
+  const checkPassword = (email,password)=>{//modificar validacion de password
     if(password==="t123"){
       setValidPassword(false);
+      setValidUser(false);
     }else{
       setValidPassword(true);
+      setValidUser(true);
     }
   };
 
@@ -45,10 +43,11 @@ function page() {
     console.log('Password',password);
     console.log("Valid Email:",validEmail);
     console.log("Valid Password",validPassword);
-    if (validEmail && validPassword){
-      //inicio de sesión
+    console.log("Valid User",validUser);
+    if (validUser){
+      router.push('/menu');
     }
-  },[validEmail,validPassword]);
+  },[validEmail,validPassword,validUser]);
 
   return (
     <div>
@@ -69,4 +68,4 @@ function page() {
   );
 }
 
-export default page
+export default Page

@@ -1,4 +1,4 @@
-function page() {
+function Page() {
   return (
     <div>
         <h1>Menu</h1>
@@ -7,4 +7,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
