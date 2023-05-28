@@ -46,28 +46,31 @@ function Page() {
     console.log("Valid Password",validPassword);
     console.log("Valid User",validUser);
     if (validUser){
-      router.push('/menu');
+      //router.push('/menu');
     }
   },[validEmail,validPassword,validUser]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        <img src="/images/logo.png" alt="Logo de la aplicación web" />
-        <h1>Iniciar Sesión</h1>
+        <div className='flex flex-col place-items-center'>
+          <img src="/images/logo.png" className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert" alt="Logo de la aplicación web" />
+          <h1 className='block dark:text-slate-100'>Iniciar Sesión</h1>
+        </div>
+        
         <form onSubmit={handleLogin}>
           <label className='block'>
-            <span className='block text-sm font-medium text-slate-700'>Correo</span>
-            <input type="email" id="email" value={email} onChange={handleEmailChange} required placeholder='Ingrese su correo'
-            className='mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm 
+            <span className='block text-sm font-medium dark:text-slate-100 text-slate-700'>Correo</span>
+            <input type="email" id="email" value={email} onChange={handleEmailChange} placeholder='Ingrese su correo'
+            className='mt-1 block w-full px-3 py-2 peer bg-white border border-slate-300 rounded-md text-sm shadow-sm 
             placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
             invalid:border-red-500 invalid:text-red-600 focus:invalid:border-red-500 focus:invalid:ring-red-500'/>
-            <p className='error-message mt-2 text-red-600 text-sm'>El correo no existe</p>
-            {!validEmail && <p className='mt-2 invisible peer-invalid:visible text-red-600 text-sm'>Ingrese un correo valido</p>}
+            <p className='mt-2 invisible peer-invalid:visible text-red-600 text-sm'>Ingrese un correo valido</p>
+            {!validEmail && <p className='error-message mt-2 invisible text-red-600 text-sm'>El correo no existe</p>}
           </label>
           <label className='block'>
-            <span className='block text-sm font-medium text-slate-700'>Contraseña</span>
-            <input type="password" id='password' value={password} onChange={handlePasswordChange} required placeholder='Ingrese su contraseña'
+            <span className='block text-sm font-medium dark:text-slate-100 text-slate-700'>Contraseña</span>
+            <input type="password" id='password' value={password} onChange={handlePasswordChange} placeholder='Ingrese su contraseña'
             className='mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm 
             placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
             invalid:border-red-500 invalid:text-red-600 focus:invalid:border-red-500 focus:invalid:ring-red-500'/>

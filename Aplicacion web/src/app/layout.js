@@ -1,3 +1,4 @@
+"use client";
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -9,10 +10,17 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const handleClick = ()=>{
+    document.documentElement.classList.toggle('dark')
+  }
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}</body>
+        <div className='dark:bg-black'>
+          <button onClick={handleClick} className='m-2 px-2 py-2 bg-sky-400 hover:bg-sky-600 active:bg-sky-800 border border-slate-900 rounded-md dark:bg-white dark:hover:bg-slate-300 dark:active:bg-slate-600'>Modo oscuro</button>
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
