@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation';
 import DarkModeButton from '@/components/common/darkModeButton';
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function Login() {
   const router = useRouter();
@@ -9,7 +10,6 @@ function Login() {
   const [password, setPassword] = useState('');
   const [validEmail, setValidEmail] = useState(true);
   const [validPassword, setValidPassword] = useState(true);
-  const [validUser, setValidUser] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -20,35 +20,35 @@ function Login() {
   };
 
   const handleLogin = async (event) =>{
-    event.preventDefault();
-    await checkUser(email);
-    await checkPassword(email,password);
-  };
-
-  const checkUser = (email)=>{
-    //agregar validacion del email
-  };
-
-  const checkPassword = (email,password)=>{//modificar validacion de password
-    if(password==="t123"){
-      setValidPassword(false);
-      setValidUser(false);
+    /* const ENDPOINT = 'URL';//agregar la direccion de la api
+    const data = {
+      email: email,
+      password: password
+    };
+    const response = await axios.post(ENDPOINT,data);
+    const dataResponse = response.data;
+    if(dataResponse.validEmail === true){
+      setValidEmail(true);
     }else{
+      setValidEmail(false);
+    }
+    if(dataResponse.validPassword === true){
       setValidPassword(true);
-      setValidUser(true);
+    }else{
+      setValidPassword(false);
+    }
+    const {token} = dataResponse;
+    localStorage.setItem('token',token);
+    */
+    if(validEmail&&validPassword){
+      router.push('/menu');
     }
   };
 
-  useEffect(()=>{
-    console.log('Email:',email);
-    console.log('Password',password);
-    console.log("Valid Email:",validEmail);
-    console.log("Valid Password",validPassword);
-    console.log("Valid User",validUser);
-    if (validUser){
-      //router.push('/menu');
-    }
-  },[validEmail,validPassword,validUser]);
+  const handleAccessRequest = ()=>{
+    router.push('/auth/register')
+  }
+
   return (
     <div className="container mx-auto min-h-screen text-center">
         <div className='grid items-center grid-rows-6 min-h-screen'>
@@ -60,13 +60,14 @@ function Login() {
               <img src="/images/logo.png" className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70]" alt="Logo de la aplicación web" />
               <h1 className='block text-center dark:text-white'>Iniciar Sesión</h1>
             </div>
-            <form onSubmit={handleLogin}>
+            <div>
               <label className='block'>
                 <span className='block text-sm font-medium text-black dark:text-white'>Correo</span>
                 <input type="email" id="email" value={email} onChange={handleEmailChange} placeholder='Ingrese su correo'
                 className='loginInput peer'/>
+                {!validEmail && <p className='error-message text-red-600 text-sm'>El correo no existe</p>}
                 <p className='mt-2 invisible peer-invalid:visible text-red-600 text-sm'>Ingrese un correo valido</p>
-                {!validEmail && <p className='error-message mt-2 invisible text-red-600 text-sm'>El correo no existe</p>}
+                
               </label>
               <label className='block'>
                 <span className='block text-sm font-medium text-black dark:text-white'>Contraseña</span>
@@ -76,11 +77,11 @@ function Login() {
               </label>
               <div className='mt-5 grid lg:grid-cols-2'>
                 <button className='button'
-                type='submit'>Iniciar sesión</button>
+                onClick={handleLogin}>Iniciar sesión</button>
                 <button className='button'
-                type='submit'>Solicitar acceso</button>
+                onClick={handleAccessRequest}>Solicitar acceso</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
