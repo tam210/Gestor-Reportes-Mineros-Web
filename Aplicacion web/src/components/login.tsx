@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import DarkModeButton from '@/components/common/darkModeButton';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 function Login() {
@@ -26,7 +26,7 @@ function Login() {
       password: password
     };
     const response = await axios.post(ENDPOINT,data);
-    const dataResponse = response.data;
+    const dataResponse: LoginResponse = response.data;
     if(dataResponse.validEmail === true){
       setValidEmail(true);
     }else{
