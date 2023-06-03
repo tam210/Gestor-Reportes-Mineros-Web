@@ -7,5 +7,6 @@ export interface UserLoginResponse{
     email: string,
     id: string,
     password: string,
-    username: string
+    username: string,
+    type: string
 }

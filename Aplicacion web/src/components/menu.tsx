@@ -1,16 +1,17 @@
+"useclient"
 import { useRouter } from "next/navigation"
 import DarkModeButton from '@/components/common/darkModeButton';
 import ThreeDots from "./common/ThreeDots";
 import React from "react";
 
-
 function Menu() {
     const router=useRouter();
-    const token ={'id':'algo','rol':'admin'};
-    //const token = null;
-    if(token === null){
+    // const token ={'id':'algo','rol':'admin'};
+    const token = localStorage.getItem('token');
+
+    /* if(token === null){
         router.push('/');
-    }
+    } */
     
     const toReports = () => {
         router.push('/reports');
@@ -40,11 +41,11 @@ function Menu() {
     }
 
     return (
-        <div>
+        <div className="dark:bg-black">
             {
                 token ?
                 (
-                    <div className="dark:bg-black container mx-auto min-h-screen text-center">
+                    <div className="container mx-auto min-h-screen text-center">
                         <div className="">
                             <DarkModeButton/>
                             <button className="button" onClick={toReports}>Reportes</button>
@@ -54,7 +55,9 @@ function Menu() {
                         </div>
                     </div>
                 ) : (
-                    <ThreeDots/>
+                    <div className="container grid mx-auto min-h-screen items-center place-items-center">
+                        <ThreeDots/>
+                    </div> 
                 )
             }
         </div>

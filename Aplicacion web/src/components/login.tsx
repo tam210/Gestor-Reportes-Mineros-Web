@@ -10,7 +10,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [validEmail, setValidEmail] = useState(true);
   const [validPassword, setValidPassword] = useState(true);
-
+  
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -41,6 +41,11 @@ function Login() {
     localStorage.setItem('token',token);
     */
     if(validEmail&&validPassword){
+      /* if(dataResponse.type === 'admin'){
+        router.push('/menu');
+      }else{
+        router.push('/reports');
+      } */
       router.push('/menu');
     }
   };
