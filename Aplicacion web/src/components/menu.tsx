@@ -51,21 +51,20 @@ function Menu() {
             {
                 token ?
                 (
-                    <div className="mx-auto min-h-screen text-center">
-                        <div className="grid items-center grid-rows-6 min-h-screen">
+                    <div className="flex h-screen min-w-[350px] min-h-[650px] flex-col items-center">
+                        <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
                             <TopBar message='Menu'/>
-                            <div className="flex flex-col row-span-4 max-w-md mx-auto bg-gray-150 shadow-slate-600 rounded-xl shadow-md overflow-hidden md:w-5/6 md:max-w-2xl dark:bg-gray-500 dark:shadow-sky-400 dark:shadow-lg">
-                                <div className="grid grid-cols-2 md:flex">
-                                    <div className="md:shrink-0">
-                                        <img src="/images/minera.jpg" className="h-full w-full object-cover md:w-64"/>
-                                    </div>
-                                    <div className="grid grid-rows-4 items-center mx-auto p-8"> 
-                                        <button className="button" onClick={toReports}>Reportes</button>
-                                        <button className="button" onClick={toUsers}>Usuarios</button>
-                                        <button className="button" onClick={toRequest}>Solicitudes de acceso</button>
-                                        <button className="button" onClick={toFC}>Factor de carga</button>
-                                    </div>
-                                </div>
+                        </div>
+                        <div className="sm:mt-36 flex flex-col text-center sm:flex-row lg:text-left">
+                            <div className="md:shrink-0 px-10 max-w-[400px] md:max-w-[450px]">
+                                <img src="/images/camion.png" className="h-full w-auto object-cover dark:invert"/>
+                            </div>
+                            <div className="lg:w-[100px] xl:w-[200px]"></div>
+                            <div className="grid grid-rows-4 items-center mx-auto p-4 md:p-12"> 
+                                <button className="button" onClick={toReports}>Reportes</button>
+                                <button className="button" onClick={toUsers}>Usuarios</button>
+                                <button className="button" onClick={toRequest}>Solicitudes de acceso</button>
+                                <button className="button" onClick={toFC}>Factor de carga</button>
                             </div>
                         </div>
                     </div>
