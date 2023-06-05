@@ -1,4 +1,4 @@
-import sqlalchemy
+#import sqlalchemy
 import pandas as pd
 import psycopg2
 import os
@@ -38,6 +38,8 @@ def lectura(archivo, cursor):
     insertarRajo(cursor,df)
     insertarDestino(cursor,df)
     insertarZona(cursor,df)
+    insertarOrigen(cursor,df)
+
     
 
 
@@ -216,7 +218,7 @@ def insertarZona(cursor,dataFrame):
             suma += 1
         else:
             zona = zona[zona['nombre'] != x]
-    idsRajo = []
+    idsRajo= []
     for x in zona["Rajo"]:
         y = buscarID("Rajo","nombre",cursor,"idrajo",x)
         if y[1] == 1:
@@ -237,7 +239,50 @@ def insertarZona(cursor,dataFrame):
 
     cursor.executemany(insert_query, zona.values.tolist())
 
-conexion = psycopg2.connect(host="localhost", database="mineria", user="postgres", password="codigo16")
+def insertarOrigen(cursor,dataFrame):
+    #--------ETL tabla Origen--------
+    Origen = dataFrame
+    # Eliminar Columnas inncesarias
+    columnas = ["Carguio","Cami¢n","Material","Flota","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
+    Origen = Origen.drop(columnas, axis=1)
+    # Eliminar filas repetidas y duplicadas
+    Origen = Origen.rename(columns={'Origen':'nombre'})
+    Origen['nombre'] = Origen['nombre'].drop_duplicates()
+    Origen = Origen.dropna()
+    #asignacion del ID
+    suma = 0
+    idsOrigen = []
+    for x in Origen["nombre"]:
+        y = buscarID("Origen","nombre",cursor,"idOrigen",x)
+        if y[1] == 0:
+            idsOrigen.append(y[0]+suma)
+            suma += 1
+        else:
+            Origen = Origen[Origen['nombre'] != x]
+    idsZona= []
+    for x in Origen["Zona"]:
+        y = buscarID("Zona","nombre",cursor,"idZona",x)
+        if y[1] == 1:
+            idsZona.append(y[0])
+        else:
+            print("si")
+    
+    Origen['idOrigen'] = idsOrigen
+    Origen['idZona'] = idsZona
+    Origen = Origen.drop('Zona',axis=1)
+
+    orden = ['idOrigen','idZona','nombre']
+    Origen = Origen[orden]
+
+    # Inserte en la BD
+    tabla = 'Origen'
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s)".format(tabla, ", ".join(Origen.columns))
+
+    cursor.executemany(insert_query, Origen.values.tolist())
+
+
+contra = "password"
+conexion = psycopg2.connect(host="localhost", database="mineria", user="postgres", password=contra)
 cur = conexion.cursor()
 
 
