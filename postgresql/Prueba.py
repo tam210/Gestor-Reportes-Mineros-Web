@@ -13,6 +13,7 @@ def creacionTablasDatos(cursor):
     tabla_origen = "DROP TABLE IF EXISTS origen; CREATE TABLE origen(idOrigen INT NOT NULL, idZona INT NOT NULL, nombre text, PRIMARY KEY(idOrigen), FOREIGN KEY(idZona) REFERENCES zona(idZona))"
     tabla_viaje = "DROP TABLE IF EXISTS viaje; CREATE TABLE viaje(idViaje INT NOT NULL, idCamion INT NOT NULL, idOrigen INT NOT NULL, idDestino INT NOT NULL, fecha date, ciclo int, tonelaje float,tonelajeReal float, material text, PRIMARY KEY(idViaje), FOREIGN KEY(idCamion) REFERENCES camion(idCamion), FOREIGN KEY (idOrigen) REFERENCES origen(idOrigen), FOREIGN KEY(idDestino) REFERENCES destino(idDestino))"
     # tabla de carguio por decidir
+    #--------------falta tabla KPI---------------
 
     cursor.execute(tabla_flota)
     cursor.execute(tabla_camion)
@@ -34,6 +35,9 @@ def lectura(archivo, cursor):
     df = pd.read_csv(filename, delimiter=";", encoding='latin-1')
     insertarFlota(cursor,df)
     insertarCamion(cursor,df)
+    insertarRajo(cursor,df)
+    insertarDestino(cursor,df)
+    insertarZona(cursor,df)
     
 
 
@@ -42,11 +46,11 @@ def buscarID(tabla,columna,cursor,idBuscar, dato):
     cursor.execute(quer)
     a = cursor.fetchone()
     if a == None:
-        quer = "SELECT COUNT(*) FROM flota"
+        quer = "SELECT COUNT(*) FROM" + tabla
         cursor.execute(quer)
         a = cursor.fetchone()
         # no esta en la base de datos y se le crea un nuevo id
-        return [a[0],0]
+        return [0,0]
     else:
         # Devuelve el id
         return [a[0],1]
@@ -60,7 +64,7 @@ def insertarFlota(cursor,dataFrame):
     # Eliminar filas repetidas y duplicadas
     flota['Flota'] = flota['Flota'].drop_duplicates()
     flota = flota.dropna()
-    #asignacion del ID
+    # asignacion del ID
     suma = 0
     ids = []
     for x in flota["Flota"]:
@@ -122,7 +126,116 @@ def insertarCamion(cursor,dataFrame):
 
     cursor.executemany(insert_query, camion.values.tolist())
     
+def insertarRajo(cursor,dataFrame):
+    #--------ETL tabla Rajo--------
+    Rajo = dataFrame
+    # Eliminar Columnas inncesarias
+    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Flota","Fecha"]
+    Rajo = Rajo.drop(columnas, axis=1)
+    # Eliminar filas repetidas y duplicadas
+    Rajo['Rajo'] = Rajo['Rajo'].drop_duplicates()
+    Rajo = Rajo.dropna()
+    # asignacion del ID
+    suma = 0
+    idsRajo = []
+    for x in Rajo["Rajo"]:
+        y = buscarID("rajo","nombre",cursor,"idRajo",x)
+        if y[1] == 0:
+            idsRajo.append(y[0] + suma)
+            suma += 1
+        else:
+            Rajo = Rajo[Rajo['Rajo'] != x]
+    Rajo['idRajo'] = idsRajo
+    orden = ['idRajo','Rajo']
+    Rajo = Rajo[orden]
+    Rajo = Rajo.rename(columns={'Rajo':'nombre'})
 
+    # Inserte en la BD
+    tabla = 'rajo'
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s)".format(tabla, ", ".join(Rajo.columns))  
+    cursor.executemany(insert_query, Rajo.values.tolist())
+
+def insertarDestino(cursor,dataFrame):
+    #--------ETL tabla Destino--------
+    Destino = dataFrame
+    # Eliminar Columnas inncesarias
+    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Flota","Tonelaje","Ciclos","Fecha"]
+    Destino = Destino.drop(columnas, axis=1)
+    # Eliminar filas repetidas y duplicadas
+    Destino = Destino.rename(columns={'Destino':'nombre'})
+    Destino['nombre'] = Destino['nombre'].drop_duplicates()
+    Destino = Destino.dropna()
+    #asignacion del ID
+    suma = 0
+    idsDestino = []
+    for x in Destino["nombre"]:
+        y = buscarID("destino","nombre",cursor,"iddestino",x)
+        if y[1] == 0:
+            idsDestino.append(y[0]+suma)
+            suma += 1
+        else:
+            Destino = Destino[Destino['nombre'] != x]
+    idsRajo = []
+    for x in Destino["Rajo"]:
+        y = buscarID("Rajo","nombre",cursor,"idrajo",x)
+        if y[1] == 1:
+            idsRajo.append(y[0])
+        else:
+            print("si")
+    
+    Destino['iddestino'] = idsDestino
+    Destino['idrajo'] = idsRajo
+    Destino = Destino.drop('Rajo',axis=1)
+
+    orden = ['iddestino','idrajo','nombre']
+    Destino = Destino[orden]
+
+    # Inserte en la BD
+    tabla = 'destino'
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s)".format(tabla, ", ".join(Destino.columns))
+
+    cursor.executemany(insert_query, Destino.values.tolist())
+
+def insertarZona(cursor,dataFrame):
+    #--------ETL tabla Zona--------
+    zona = dataFrame
+    # Eliminar Columnas inncesarias
+    columnas = ["Carguio","Cami¢n","Material","Origen","Flota","Destino","Tonelaje","Ciclos","Fecha"]
+    zona = zona.drop(columnas, axis=1)
+    # Eliminar filas repetidas y duplicadas
+    zona = zona.rename(columns={'Zona':'nombre'})
+    zona['nombre'] = zona['nombre'].drop_duplicates()
+    zona = zona.dropna()
+    #asignacion del ID
+    suma = 0
+    idszona = []
+    for x in zona["nombre"]:
+        y = buscarID("zona","nombre",cursor,"idzona",x)
+        if y[1] == 0:
+            idszona.append(y[0]+suma)
+            suma += 1
+        else:
+            zona = zona[zona['nombre'] != x]
+    idsRajo = []
+    for x in zona["Rajo"]:
+        y = buscarID("Rajo","nombre",cursor,"idrajo",x)
+        if y[1] == 1:
+            idsRajo.append(y[0])
+        else:
+            print("si")
+    
+    zona['idzona'] = idszona
+    zona['idrajo'] = idsRajo
+    zona = zona.drop('Rajo',axis=1)
+
+    orden = ['idzona','idrajo','nombre']
+    zona = zona[orden]
+
+    # Inserte en la BD
+    tabla = 'zona'
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s)".format(tabla, ", ".join(zona.columns))
+
+    cursor.executemany(insert_query, zona.values.tolist())
 
 conexion = psycopg2.connect(host="localhost", database="mineria", user="postgres", password="codigo16")
 cur = conexion.cursor()
