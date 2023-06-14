@@ -1,6 +1,9 @@
+"use client"
+import Report from "@/components/report"
+
 function Page() {
   return (
-    <div>Page</div>
+    <Report/>
   )
 }
 

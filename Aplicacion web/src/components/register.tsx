@@ -45,7 +45,10 @@ function Register() {
                 <div>
                     <label className='block'>
                         <span className='block text-sm font-medium text-black dark:text-white'>Tipo de usuario</span>
-                        {/* agregar un list box para el tipo de usuario */}
+                        <select>
+                            <option value="admin">Administrador</option>
+                            <option value="user">Usuario</option>
+                        </select>
                     </label>
                     <label className='block'>
                         <span className='block text-sm font-medium text-black dark:text-white'>Contraseña</span>
