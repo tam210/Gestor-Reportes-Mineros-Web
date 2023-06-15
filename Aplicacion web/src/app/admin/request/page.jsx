@@ -1,6 +1,9 @@
+"use client"
+import Request from "@/components/request"
+
 function Page() {
     return (
-      <div>Page</div>
+      <Request/>
     )
   }
   

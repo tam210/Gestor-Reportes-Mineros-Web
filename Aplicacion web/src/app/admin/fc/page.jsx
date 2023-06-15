@@ -1,6 +1,9 @@
+"use client"
+const { default: ChargeFactor } = require("@/components/chargeFactor");
+
 function Page() {
     return (
-      <div>Page</div>
+      <ChargeFactor/>
     )
   }
   
