@@ -23,47 +23,65 @@ function ChargeFactor() {
         
     
   return (
-    <div>
-        <TopBar message="Factor de carga"/>
-        <div>
-            <label className="block">
-                <span>Flota:</span>
-                <select name="fleet" id="">
-                    {/* {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                        {option.label}
-                        </option>
-                    ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
-                </select>
-            </label>
-            <label className="block">
-                <span>Fase:</span>
-                <select name="fleet" id="">
-                    {/* {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                        {option.label}
-                        </option>
-                    ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
-                </select>
-            </label>
-            <label className="block">
-                <span>Fecha de inicio</span>
-                <DatePicker selected={startedDate}
-                            onChange={handleStartChange}
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText="Selecciona una fecha"/>
-            </label>
-            <label className="block">
-                <span>Fecha de termino</span>
-                <DatePicker selected={endDate}
-                            onChange={handleEndChange}
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText="Selecciona una fecha"/>
-            </label>
-            <label className="block">
-                <span>Factor de carga:</span>
-                <input type="number" id='chargeFactor'  value={chargeFactor} onChange={handleChargeFactor} placeholder='Ingrese el nuevo factor de carga'/>
-            </label>
+    <div className='flex flex-col h-screen w-full items-center dark:bg-black'>
+        <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+            <TopBar message="Factor de carga"/>
+        </div>  
+        <div className='flex flex-col mt-8 mx-6'>
+            <div className='max-w-[200px] sm:max-w-[300px] self-center'>
+                <img className='w-full h-auto' src="/images/camion.png"/>
+            </div>
+            <div className='flex flex-col sm:flex-row'>
+                <div className='sm:mx-4'>
+                    <label className="block my-3">
+                        <span>Flota:</span>
+                        <select className='mx-3 w-full' name="fleet" id="">
+                            {/* {options.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                {option.label}
+                                </option>
+                            ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
+                        </select>
+                    </label>
+                    <label className="block my-3">
+                        <span>Fase:</span>
+                        <select className='mx-3 w-full' name="fleet" id="">
+                            {/* {options.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                {option.label}
+                                </option>
+                            ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
+                        </select>
+                    </label>
+                </div>
+                <div className='sm:ml-4'>
+                    <label className="block my-3">
+                        <span>Fecha de inicio:</span>
+                        <DatePicker className='mx-3' selected={startedDate}
+                                    onChange={handleStartChange}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="Selecciona una fecha"/>
+                    </label>
+                    <label className="block my-3">
+                        <span>Fecha de termino:</span>
+                        <DatePicker className='mx-3' selected={endDate}
+                                    onChange={handleEndChange}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="Selecciona una fecha"/>
+                    </label>
+                </div>
+            </div>
+            <div className='flex flex-col sm:self-center'>
+                <div>
+                    <label className="block my-3">
+                        <span>Factor de carga:</span>
+                        <input className='mx-3' type="number" id='chargeFactor'  value={chargeFactor} onChange={handleChargeFactor} placeholder='Ingrese el factor de carga'/>
+                    </label>
+                </div>
+                <div className='self-center'>
+                  <button className='button w-36'>Confirmar</button>
+                </div>
+            </div>
         </div>
     </div>
   )
