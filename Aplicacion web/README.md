@@ -12,4 +12,4 @@
 
 ## Posibles errores
 
-* Puede ocurrir un error al acceder a una ventana con un data grid debido a la version de react, si encuentras el error webpackMissingModule refiriendose a que no encuentra un archivo de la biblioteca @emotion prueba usando ´node npm install´
+* Puede ocurrir un error al acceder a una ventana con un data grid debido a la version de react, si encuentras el error webpackMissingModule refiriendose a que no encuentra un archivo de la biblioteca @emotion prueba usando ´npm install´
