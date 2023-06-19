@@ -1,9 +1,15 @@
-# Gestor de reportes mineros
+# Instalación de bibliotecas
 
+* npm install
+* npm install react-datepicker
+* npm install @mui/x-data-grid
+* npm install @mui/material @emotion/react @emotion/styled
 
-El presente proyecto tiene como finalidad desarrollar un sistema de software web para monitorear el movimiento de material del área minera. Será posible descargar reportes en excel según distintos tipos de vistas: Diarias, semanales, semanales ISO, mensuales y anuales. El sistema estará diseñado para ser utilizado por personal autorizado el cual se dividirá en 2 tipos: Administradores (quienes pueden modificar la información) y Usuarios (quienes solo pueden ver los reportes).
-<br>
+## Documentación
 
-<p align="center">
-  <img width="330" src="docs/assets/github-asset.png">
-</p>
+* Para datepicker https://www.npmjs.com/package/react-datepicker
+* Para datagrid https://mui.com/x/react-data-grid/getting-started/
+
+## Posibles errores
+
+* Puede ocurrir un error al acceder a una ventana con un data grid debido a la version de react, si encuentras el error webpackMissingModule refiriendose a que no encuentra un archivo de la biblioteca @emotion prueba usando ´node npm install´
