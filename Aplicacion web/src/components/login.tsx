@@ -72,7 +72,6 @@ function Login() {
                 className='loginInput peer'/>
                 {!validEmail && <p className='error-message text-red-600 text-sm'>El correo no existe</p>}
                 <p className='mt-2 invisible peer-invalid:visible text-red-600 text-sm'>Ingrese un correo valido</p>
-                
               </label>
               <label className='block'>
                 <span className='block text-sm font-medium text-black dark:text-white'>Contraseña</span>
