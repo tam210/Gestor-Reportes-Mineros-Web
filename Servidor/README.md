@@ -57,7 +57,23 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Postgres
+```bash
+# instala los package necesarios de postgres
+$ npm i pg
+```
 
+## ORM
+```bash
+# instala sequelize ORM para postgres
+$ npm install --save @nestjs/sequelize sequelize sequelize-typescript postgres
+$ npm install --save-dev @types/sequelize
+```
+## ConfigModule
+```bash
+#instala configmodule usado para acceder a variables de entorno
+$ npm i --save @nestjs/config
+```
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
