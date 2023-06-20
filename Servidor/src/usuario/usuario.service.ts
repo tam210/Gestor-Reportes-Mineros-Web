@@ -16,7 +16,16 @@ export class UsuarioService {
   }
 
   async findAll() {
-    return await this.usuarioModel.findAll();
+    return await this.usuarioModel.findAll({ 
+      attributes: { 
+        exclude: ['pass'], 
+        include: [
+          [
+            this.usuarioModel.sequelize.literal("CASE WHEN tipousuario = 0 THEN 'admin' WHEN tipousuario = 1 THEN 'usuario' WHEN tipousuario = 2 THEN 'pendiente' END"),'tipousuario', //Convierte el numero del tipo usuario a texto para mostrar
+          ]
+        ]
+      } 
+    } );
   }
 
   findOne(id: number) {

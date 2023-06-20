@@ -74,6 +74,10 @@ $ npm install --save-dev @types/sequelize
 #instala configmodule usado para acceder a variables de entorno
 $ npm i --save @nestjs/config
 ```
+
+# Configuración actual
+* El servidor se encuentra en localhost:3001 (el puerto puede ser cambiado en main.ts)
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
