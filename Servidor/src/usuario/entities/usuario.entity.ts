@@ -21,5 +21,7 @@ export class Usuario extends Model<Usuario>{
     @Column
     pass: string;
     @Column
-    tipousuario: number;
+    tipousuario: number;   
+    @Column
+    estado: number;
 }

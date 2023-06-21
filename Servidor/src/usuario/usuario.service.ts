@@ -17,7 +17,8 @@ export class UsuarioService {
       apellido: createUsuarioDto.apellido,
       correo: createUsuarioDto.correo,
       pass: createUsuarioDto.pass,
-      tipousuario: createUsuarioDto.tipousuario
+      tipousuario: createUsuarioDto.tipousuario,
+      estado: createUsuarioDto.estado
     });
     return usuario.toJSON();
   }
