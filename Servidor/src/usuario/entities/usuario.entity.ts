@@ -1,12 +1,15 @@
 import { Column, Model, Table} from 'sequelize-typescript'
 
 @Table({
+    //nombre de la tabla en la bd
     tableName: 'usuario',
+    //campo extra q se guarda en la BD
+    //cuando se modificó, creó, etc.
     timestamps: false
 })
 export class Usuario extends Model<Usuario>{
     @Column({
-        primaryKey: true
+        primaryKey: true,
     })
     idusuario: number;
     @Column

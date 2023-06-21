@@ -8,7 +8,9 @@ export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
+  //Recibe desde el body un 'objeto' 
+  //con los parametros a pasar para crear en userDTO
+    create(@Body() createUsuarioDto: CreateUsuarioDto) {
     return this.usuarioService.create(createUsuarioDto);
   }
 
