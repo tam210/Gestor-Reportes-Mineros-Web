@@ -28,7 +28,7 @@ export class SolicitudController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string) { 
     return this.solicitudService.remove(+id);
   }
 }
