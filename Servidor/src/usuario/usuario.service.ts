@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { UsuarioModel } from './usuario.model';
+import { Usuario } from './entities/usuario.entity';
 
 @Injectable()
 export class UsuarioService {
 
   constructor(
-    @InjectModel(UsuarioModel) private usuarioModel: typeof UsuarioModel
+    @InjectModel(Usuario) private usuarioModel: typeof Usuario
   ){}
 
   create(createUsuarioDto: CreateUsuarioDto) {
@@ -28,8 +28,12 @@ export class UsuarioService {
     } );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOne(id: string) {
+    return await this.usuarioModel.findOne({where:{idusuario:id}});
+  }
+
+  async findOneEmail(email: string){
+    return await this.usuarioModel.findOne({where:{correo:email}});
   }
 
   update(id: number, updateUsuarioDto: UpdateUsuarioDto) {

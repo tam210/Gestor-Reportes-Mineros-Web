@@ -4,7 +4,8 @@ import { AppService } from './app.service';
 import { UsuarioModule } from './usuario/usuario.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
-import { UsuarioModel } from './usuario/usuario.model';
+import { Usuario } from './usuario/entities/usuario.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,9 +19,10 @@ import { UsuarioModel } from './usuario/usuario.model';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [UsuarioModel]
+      models: [Usuario]
     }),
-    UsuarioModule],
+    UsuarioModule,
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
