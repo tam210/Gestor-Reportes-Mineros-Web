@@ -21,5 +21,10 @@ export class Usuario extends Model<Usuario>{
     @Column
     pass: string;
     @Column
-    tipousuario: number;
+    tipousuario: number;   
+    @Column({
+        allowNull: false,
+        defaultValue: 1, //1=pendiente
+    })
+    estado: number;
 }

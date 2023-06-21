@@ -25,17 +25,10 @@ export class Solicitud extends Model<Solicitud>{
 
     @Column({
         allowNull: false,
-        defaultValue: 'pendiente',
-    })
-    estado: boolean;
-
-    @Column({
-        allowNull: false,
         defaultValue: DataType.NOW,
     })
     fecha: Date;
 
     @BelongsTo(() => Usuario)
     usuario: Usuario;
-
 }
