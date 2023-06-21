@@ -6,11 +6,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { UsuarioModel } from './usuario/usuario.model';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath:'.env.dev'
     }),
+//de toda la conexión a BD, solo se tendrá acceso
+//a UsuarioModel
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host:process.env.DB_HOST,
