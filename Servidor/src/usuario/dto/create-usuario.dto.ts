@@ -3,4 +3,5 @@ export class CreateUsuarioDto {
     apellido: string
     correo: string
     pass: string
+    tipousuario: number
 }
