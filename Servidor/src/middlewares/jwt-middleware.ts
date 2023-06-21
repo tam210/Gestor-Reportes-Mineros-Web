@@ -11,7 +11,7 @@ export class JwtMiddleware implements NestMiddleware{
     use(req: Request, res: Response, next: NextFunction) {
         try{
             const tokenH = req.headers.authorization;
-            //Verificar si el token viene en el header
+            //Verificar si el token viene en el header 
             if(!tokenH) throw new UnauthorizedException('Token no válido (header)');
             //Verificar si el token
             if(!tokenH.startsWith('Bearer')) throw new UnauthorizedException('Token no válido (no empieza con bearer)');
