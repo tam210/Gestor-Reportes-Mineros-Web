@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@nestjs/config": "^3.0.0",
+    "@nestjs/jwt": "^10.1.0",
+    "@nestjs/mapped-types": "*",
     "@nestjs/sequelize": "^10.0.0",
     "pg": "^8.11.0",
     "postgres": "^3.3.5",
