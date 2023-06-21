@@ -5,6 +5,10 @@
 * npm install @mui/x-data-grid
 * npm install @mui/material @emotion/react @emotion/styled
 
+## Configuración
+
+* La aplicación web esta en localhost:3000 puede cambiarse en el package.json agregando '-p puerto' en "dev" o "start"
+
 ## Documentación
 
 * Para datepicker https://www.npmjs.com/package/react-datepicker

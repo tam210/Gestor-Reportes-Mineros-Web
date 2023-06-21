@@ -15,6 +15,7 @@ import {
   GridValidRowModel
 } from '@mui/x-data-grid';
 import TopBar from './common/topBar';
+import axios from 'axios';
 
 
 const initialRows: GridValidRowModel[] = [ //se elimina y remplaza por consulta a la BD
@@ -27,6 +28,13 @@ const initialRows: GridValidRowModel[] = [ //se elimina y remplaza por consulta 
 function Users() {
   const [rows, setRows] = React.useState(initialRows);
   const apiRef = useGridApiRef();
+  const handleUsers = async () => {
+    const ENDPOINT = 'http://localhost:3001/usuario'
+    const data = {
+    }
+    const response = await axios.post(ENDPOINT, data)
+    console.log(response.data)
+  }
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -55,7 +63,7 @@ function Users() {
             <DataGrid columns={columns} rows={rows} apiRef={apiRef}/>
           </div>
           <div className='flex self-center'>
-              <button className='button' onClick={handleConfirmButton}>Confirmar</button>
+              <button className='button' onClick={handleUsers}>Confirmar</button>
               <button className='button' onClick={handleCancelButton}>Cancelar</button>
           </div>
         </div>
