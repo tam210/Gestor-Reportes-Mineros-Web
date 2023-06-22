@@ -12,6 +12,7 @@ export class UsuarioService {
   ){}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
+    console.log('nuevo usuario')
     const usuario = await this.usuarioModel.create({
       nombre: createUsuarioDto.nombre,
       apellido: createUsuarioDto.apellido,
@@ -23,6 +24,7 @@ export class UsuarioService {
   }
 
   async findAll() {
+    console.log('find all')
     return await this.usuarioModel.findAll({ 
       attributes: { 
         exclude: ['pass'], 
@@ -36,6 +38,7 @@ export class UsuarioService {
   }
 
   async findAllWithPassword() {
+    console.log('find all p')
     return await this.usuarioModel.findAll({ 
       attributes: { 
         include: [
@@ -48,6 +51,7 @@ export class UsuarioService {
   }
 
   async findOne(id: string) {
+    console.log('find one')
     const usuario = await this.usuarioModel.findOne({
       where: {
         id: id
@@ -57,6 +61,7 @@ export class UsuarioService {
   }
   
   async findOneCorreo(correo: string) {
+    console.log('find one c')
     const usuario = await this.usuarioModel.findOne({
       where: {
         correo: correo
@@ -67,10 +72,12 @@ export class UsuarioService {
   
 
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
+    console.log('update')
     return `This action updates a #${id} usuario`;
   }
 
   remove(id: number) {
+    console.log('remove')
     return `This action removes a #${id} usuario`;
   }
 }

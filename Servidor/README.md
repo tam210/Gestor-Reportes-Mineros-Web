@@ -65,7 +65,6 @@ $ npm i --save @nestjs/config
 ```bash
 # instala JWT para comunicarse entre el frontend y la api
 $ npm install --save @nestjs/jwt
-$ npm install -g @nestjs/cli
 ```
 
 # Configuración actual
