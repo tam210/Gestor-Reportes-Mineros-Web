@@ -1,11 +1,13 @@
 import pandas as pd
 import psycopg2
 import os
+import shutil
 
 def lectura(archivo, cursor):
     current_dir = os.path.dirname(os.path.realpath(__file__)) 
     filename = os.path.join(current_dir, archivo) 
     df = pd.read_csv(filename, delimiter=";", encoding='latin-1')
+    df = df.dropna()
     insertarFlota(cursor,df)
     insertarCamion(cursor,df)
     insertarRajo(cursor,df)
@@ -17,7 +19,7 @@ def lectura(archivo, cursor):
     insertarViaje(cursor,df)
 
 def buscarID(tabla,columna,cursor,idBuscar, dato):
-    quer = str("SELECT "+idBuscar+" FROM "+tabla+" WHERE "+columna+" = '"+dato+"'")
+    quer = str("SELECT "+idBuscar+" FROM "+tabla+" WHERE "+columna+" = '"+str(dato)+"'")
     cursor.execute(quer)
     a = cursor.fetchone()
     if a == None:
@@ -398,14 +400,46 @@ def insertarViaje(cursor,dataFrame):
 
     cursor.executemany(insert_query, Viaje.values.tolist())
 
+def buscarArchivo():
+    #carpeta del proyecto
+    carpeta = os.getcwd()
+
+    #carpeta en la que se encuentra los archivos guardados
+    carpeta = carpeta + str("\postgresql")
+
+    # se crea una lista de todos los archivos dentro de la carpeta
+    archivos = os.listdir(carpeta)
+
+    for archivo in archivos:
+        if archivo.endswith(".csv"):
+            return archivo
+    vacio = "null"
+    return vacio
+
+def moverArchivo(archivo):
+    #carpeta del proyecto
+    carpeta = os.getcwd()
+
+    #carpeta en la que se encuentra los archivos guardados
+    carpeta = carpeta + str("\postgresql")
+
+    rutaActual = os.path.join(carpeta,archivo)
+
+    destino = carpeta + str("\Procesados")
+
+    shutil.move(rutaActual,destino)
+
 
 contra = "codigo16"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 
-archivo = "DatosEjemploDiciembre2.csv"
+archivo = buscarArchivo()
 
-
-lectura(archivo,cur)
+if archivo != "null":
+    print(archivo)
+    lectura(archivo,cur)
+    moverArchivo(archivo)
 conexion.commit()
 conexion.close()
+
