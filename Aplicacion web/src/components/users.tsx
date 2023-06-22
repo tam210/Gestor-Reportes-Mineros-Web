@@ -31,6 +31,9 @@ function Users() {
   const handleUsers = async () => {
     const ENDPOINT = 'http://localhost:3001/usuario'
     const data = {
+      headers:{
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb3JyZW8iOiJ2aXNpQGdtLmNsIiwiaWF0IjoxNjg3NDAyODI4LCJleHAiOjE2ODc0ODkyMjh9.8ZZn7t_Hgx5amejRptI19OH9b3wG29aTYqUKibNREm0'
+      }
     }
     const response = await axios.post(ENDPOINT, data)
     console.log(response.data)
