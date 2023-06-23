@@ -1,0 +1,7 @@
+SELECT viaje.idfecha, rajo.idrajo, rajo.nombre, SUM (viaje.tonelajereal) as real
+FROM viaje 
+    JOIN origen ON viaje.idorigen = origen.idorigen
+    JOIN zona ON origen.idzona = zona.idzona
+    JOIN rajo ON zona.idrajo = rajo.idrajo
+    GROUP BY viaje.idfecha,rajo.idrajo
+    ORDER BY viaje.idfecha,rajo.idrajo;
