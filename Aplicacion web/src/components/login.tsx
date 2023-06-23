@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 import DarkModeButton from '@/components/common/darkModeButton';
 import React, { useState } from 'react';
 import axios from 'axios';
+import { LoginResponse, UserLoginResponse } from '@/config/interfaces';
 
 function Login() {
   const router = useRouter();
@@ -20,33 +21,36 @@ function Login() {
   };
 
   const handleLogin = async (event) =>{
-    /* const ENDPOINT = 'URL';//agregar la direccion de la api
+    const ENDPOINT = 'http://localhost:3001/auth/login';//agregar la direccion de la api
     const data = {
       email: email,
       password: password
     };
     const response = await axios.post(ENDPOINT,data);
     const dataResponse: LoginResponse = response.data;
-    if(dataResponse.validEmail === true){
+    const userResponse: UserLoginResponse = dataResponse.user;
+
+    if(userResponse.validEmail === true){
       setValidEmail(true);
+
+      if(userResponse.validPassword === true){
+        setValidPassword(true);
+
+        const {token} = dataResponse;
+        localStorage.setItem('token',token);
+        if(userResponse.userType === 0){
+          router.push('/admin/menu')
+        }
+        if(userResponse.userType === 1){
+          router.push('/reports')
+        }
+
+      }else{
+        setValidPassword(false);
+      }
+
     }else{
       setValidEmail(false);
-    }
-    if(dataResponse.validPassword === true){
-      setValidPassword(true);
-    }else{
-      setValidPassword(false);
-    }
-    const {token} = dataResponse;
-    localStorage.setItem('token',token);
-    */
-    if(validEmail&&validPassword){
-      /* if(dataResponse.type === 'admin'){
-        router.push('/menu');
-      }else{
-        router.push('/reports');
-      } */
-      router.push('/menu');
     }
   };
 
