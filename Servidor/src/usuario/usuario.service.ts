@@ -12,7 +12,7 @@ export class UsuarioService {
   ){}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
-    console.log('nuevo usuario')
+    console.log('createUsuarioDto')
     const usuario = await this.usuarioModel.create({
       nombre: createUsuarioDto.nombre,
       apellido: createUsuarioDto.apellido,
@@ -20,7 +20,7 @@ export class UsuarioService {
       pass: createUsuarioDto.pass,
       tipousuario: createUsuarioDto.tipousuario
     });
-    return usuario.toJSON();
+    return usuario; 
   }
 
   async findAll() {
