@@ -436,16 +436,16 @@ def ejecutar_script_con_parametro(script_path, parametro):
     subprocess.run(["python", script_path, parametro])
 
 def aleatorio(cursor):
-    numero = random.randint(-10,10)
+    
     quer = str("SELECT fecha.IDfecha, zona.idzona, SUM (viaje.tonelajereal) as real FROM viaje JOIN origen ON viaje.idorigen = origen.idorigen JOIN zona ON origen.idzona = zona.idzona JOIN rajo ON rajo.idrajo = zona.idrajo JOIN fecha ON fecha.idfecha = viaje.idfecha GROUP BY fecha.idfecha, zona.idzona,rajo.idrajo ORDER BY fecha.idfecha,zona.idzona")
     cursor.execute(quer)
     a = cursor.fetchall()
     kpi = pd.DataFrame(a,columns=['idfecha','idzona','real'])
-    print('//////////////////')
     ids = []
     esperado = []
     idn = 0
     for valor in kpi['real']:
+        numero = random.randint(-10,10)
         porcentaje = 100 + numero
         nuevo = valor*porcentaje/100
         esperado.append(nuevo)
@@ -453,10 +453,11 @@ def aleatorio(cursor):
         idn += 1
     kpi['idkpi'] = ids
     kpi['esperado'] = esperado
-    orden = ['idkpi','idfecha','idzona','esperado','real',]
+    kpi = kpi.drop('real',axis=1)
+    orden = ['idkpi','idfecha','idzona','esperado']
     kpi = kpi[orden]
     tabla = 'kpi'
-    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s, %s)".format(tabla, ", ".join(kpi.columns))
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s)".format(tabla, ", ".join(kpi.columns))
 
     cursor.executemany(insert_query, kpi.values.tolist())
 
@@ -469,7 +470,6 @@ cur = conexion.cursor()
 archivo = buscarArchivo()
 
 if archivo != "null":
-    print(archivo)
     lectura(archivo,cur)
     moverArchivo(archivo)
 

@@ -12,7 +12,7 @@ def creacionTablasDatos(cursor):
     tabla_carguio = "DROP TABLE IF EXISTS carguio; CREATE TABLE carguio(idcarguio INT NOT NULL, nombre text, PRIMARY KEY (idcarguio))"
     tabla_Fecha = "DROP TABLE IF EXISTS fecha; CREATE TABLE Fecha(idFecha INT NOT NULL, fecha date, PRIMARY KEY (idFecha))"
     tabla_viaje = "DROP TABLE IF EXISTS viaje; CREATE TABLE viaje(idViaje INT NOT NULL, idCarguio INT NOT NULL, idFecha INT NOT NULL, idCamion INT NOT NULL, idOrigen INT NOT NULL, idDestino INT NOT NULL, ciclos int, tonelaje INT, tonelajeReal INT, material text, PRIMARY KEY(idViaje), FOREIGN KEY(idCarguio) REFERENCES carguio(idCarguio), FOREIGN KEY(idFecha) REFERENCES fecha(idFecha), FOREIGN KEY(idCamion) REFERENCES camion(idCamion), FOREIGN KEY (idOrigen) REFERENCES origen(idOrigen), FOREIGN KEY(idDestino) REFERENCES destino(idDestino))"
-    tabla_Kpi = "DROP TABLE IF EXISTS Kpi; CREATE TABLE Kpi(idKpi INT NOT NULL, idZona INT NOT NULL, idFecha INT NOT NULL, esperado INT, real INT, PRIMARY KEY (idKpi), FOREIGN KEY (idZona) REFERENCES zona(idZona),FOREIGN KEY (idFecha) REFERENCES fecha(idFecha))"
+    tabla_Kpi = "DROP TABLE IF EXISTS Kpi; CREATE TABLE Kpi(idKpi INT NOT NULL, idZona INT NOT NULL, idFecha INT NOT NULL, esperado INT, PRIMARY KEY (idKpi), FOREIGN KEY (idZona) REFERENCES zona(idZona),FOREIGN KEY (idFecha) REFERENCES fecha(idFecha))"
 
     cursor.execute(tabla_flota)
     cursor.execute(tabla_camion)
@@ -26,8 +26,8 @@ def creacionTablasDatos(cursor):
     cursor.execute(tabla_Kpi)
 
 def creacionTablasUsuarios(cursor):
-    tabla_usuario = "DROP TABLE IF EXISTS usuario; CREATE TABLE usuario(idUsuario INT NOT NULL, nombre text, apellido text, correo text, pass text, tipoUsuario INT, PRIMARY KEY (idUsuario))"
-    tabla_solicitudes = "DROP TABLE IF EXISTS solicitud; CREATE TABLE solicitud(idSolicitud INT NOT NULL, idUsuario INT NOT NULL, estado boolean, fecha date, PRIMARY KEY(idSolicitud), FOREIGN KEY(idUsuario) REFERENCES usuario(idUsuario))"
+    tabla_usuario = "DROP TABLE IF EXISTS usuario; CREATE TABLE usuario(correo text NOT NULL, nombre text, apellido text, pass text, tipoUsuario INT, estado INT, PRIMARY KEY (correo))"
+    tabla_solicitudes = "DROP TABLE IF EXISTS solicitud; CREATE TABLE solicitud(idSolicitud INT NOT NULL, correo text NOT NULL, fecha date, PRIMARY KEY(idSolicitud), FOREIGN KEY(correo) REFERENCES usuario(correo))"
     cursor.execute(tabla_usuario)
     cursor.execute(tabla_solicitudes)
 
