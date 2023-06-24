@@ -12,7 +12,7 @@ def creacionTablasDatos(cursor):
     tabla_carguio = "DROP TABLE IF EXISTS carguio; CREATE TABLE carguio(idcarguio INT NOT NULL, nombre text, PRIMARY KEY (idcarguio))"
     tabla_Fecha = "DROP TABLE IF EXISTS fecha; CREATE TABLE Fecha(idFecha INT NOT NULL, fecha date, PRIMARY KEY (idFecha))"
     tabla_viaje = "DROP TABLE IF EXISTS viaje; CREATE TABLE viaje(idViaje INT NOT NULL, idCarguio INT NOT NULL, idFecha INT NOT NULL, idCamion INT NOT NULL, idOrigen INT NOT NULL, idDestino INT NOT NULL, ciclos int, tonelaje INT, tonelajeReal INT, material text, PRIMARY KEY(idViaje), FOREIGN KEY(idCarguio) REFERENCES carguio(idCarguio), FOREIGN KEY(idFecha) REFERENCES fecha(idFecha), FOREIGN KEY(idCamion) REFERENCES camion(idCamion), FOREIGN KEY (idOrigen) REFERENCES origen(idOrigen), FOREIGN KEY(idDestino) REFERENCES destino(idDestino))"
-    tabla_Kpi = "DROP TABLE IF EXISTS Kpi; CREATE TABLE Kpi(idKpi INT NOT NULL, idRajo INT NOT NULL, idFecha INT NOT NULL, esperado INT, real INT, PRIMARY KEY (idKpi), FOREIGN KEY (idRajo) REFERENCES rajo(idRajo),FOREIGN KEY (idFecha) REFERENCES fecha(idFecha) )"
+    tabla_Kpi = "DROP TABLE IF EXISTS Kpi; CREATE TABLE Kpi(idKpi INT NOT NULL, idZona INT NOT NULL, idFecha INT NOT NULL, esperado INT, real INT, PRIMARY KEY (idKpi), FOREIGN KEY (idZona) REFERENCES zona(idZona),FOREIGN KEY (idFecha) REFERENCES fecha(idFecha))"
 
     cursor.execute(tabla_flota)
     cursor.execute(tabla_camion)
