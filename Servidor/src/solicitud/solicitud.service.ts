@@ -13,9 +13,9 @@ export class SolicitudService {
 
   async createSolicitud(createSolicitudDto: CreateSolicitudDto){
     const { correo } = createSolicitudDto;
-    return this.solicitudModel.create({ idsolicitud:1,correo:correo });
+    const id = await this.solicitudModel.count();
+    return this.solicitudModel.create({ idsolicitud:id+1,correo:correo });
   }
-
 
   async findAll() {
     return this.solicitudModel.findAll();
