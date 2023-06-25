@@ -15,6 +15,7 @@ export class AuthService {
 
     async login(loginDto: LoginDto){
         const { email, password } = loginDto;
+        
         const user = await this.usuarioService.findOneCorreo(email);
 
         if (!user) return {token: null, user:{validEmail:false, validPassword:false, userType:null}};

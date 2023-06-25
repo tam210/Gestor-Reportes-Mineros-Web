@@ -8,6 +8,7 @@ import { Solicitud } from './entities/solicitud.entity';
   imports: [SequelizeModule.forFeature([Solicitud])],
  // Agrega el modelo "Solicitud" aquí
   controllers: [SolicitudController],
-  providers: [SolicitudService]
+  providers: [SolicitudService],
+  exports: [SolicitudService]
 })
 export class SolicitudModule {}

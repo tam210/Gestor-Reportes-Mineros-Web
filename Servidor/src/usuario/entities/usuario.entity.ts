@@ -10,15 +10,12 @@ import { AutoIncrement, Column, Model, PrimaryKey, Table} from 'sequelize-typesc
 export class Usuario extends Model<Usuario>{
     
     @PrimaryKey
-    @AutoIncrement
     @Column
-    idusuario: number;
+    correo: string;
     @Column
     nombre: string;
     @Column
     apellido: string;
-    @Column
-    correo: string;
     @Column
     pass: string;
     @Column

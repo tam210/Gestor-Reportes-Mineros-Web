@@ -3,12 +3,14 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Usuario } from './entities/usuario.entity';
+import { SolicitudService } from 'src/solicitud/solicitud.service';
 
 @Injectable()
 export class UsuarioService {
 
   constructor(
-    @InjectModel(Usuario) private usuarioModel: typeof Usuario
+    @InjectModel(Usuario) private usuarioModel: typeof Usuario,
+    private solicitudService: SolicitudService
   ){}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
@@ -20,7 +22,7 @@ export class UsuarioService {
       pass: createUsuarioDto.pass,
       tipousuario: createUsuarioDto.tipousuario
     });
-    return usuario; 
+    const solicitud = await this.solicitudService.createSolicitud({correo: createUsuarioDto.correo})
   }
 
   async findAll() {

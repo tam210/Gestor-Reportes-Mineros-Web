@@ -12,8 +12,8 @@ export class SolicitudService {
   ) {}
 
   async createSolicitud(createSolicitudDto: CreateSolicitudDto){
-    const { idusuario, fecha } = createSolicitudDto;
-    return this.solicitudModel.create({ idusuario, fecha });
+    const { correo } = createSolicitudDto;
+    return this.solicitudModel.create({ idsolicitud:1,correo:correo });
   }
 
 

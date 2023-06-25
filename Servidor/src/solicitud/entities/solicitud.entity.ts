@@ -18,10 +18,10 @@ export class Solicitud extends Model<Solicitud>{
     @ForeignKey(() => Usuario)
     @Column({
         allowNull: false,
-        field: 'idusuario',
-        type: DataType.INTEGER
+        field: 'correo',
+        type: DataType.STRING
     })
-    idusuario: number;
+    correo: string;
 
     @Column({
         allowNull: false,
