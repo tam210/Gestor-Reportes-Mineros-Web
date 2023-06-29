@@ -21,6 +21,8 @@ export class AuthService {
         if (!user) return {token: null, user:{validEmail:false, validPassword:false, userType:null}};
 
         if (user.pass !== password)return{token: null, user:{validEmail:true, validPassword:false, userType:null}};
+
+        if (user.estado !== 0)return{token:null, user:{validEmail:true, validPassword: true, userType:null, userActive:false}};//estados (0: activo, 1: pendiente, 2:bloqueado)
      
         const payload = {email}
         const userType = user.tipousuario;
@@ -43,8 +45,6 @@ export class AuthService {
             }
         }
         const newUser: CreateUsuarioDto= { correo:email, pass:password, nombre:name, apellido:lastName, tipousuario:tipo };
-        console.log(newUser);
-        //this.usuarioService.create(newUser);
         return { validEmail: true, validType: true , user:this.usuarioService.create(newUser)};
     }
 

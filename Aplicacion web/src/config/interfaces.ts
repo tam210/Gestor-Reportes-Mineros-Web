@@ -6,5 +6,6 @@ export interface LoginResponse{
 export interface UserLoginResponse{
     validEmail: boolean,
     validPassword: boolean,
-    userType: number
+    userType: number,
+    userActive: boolean
 }

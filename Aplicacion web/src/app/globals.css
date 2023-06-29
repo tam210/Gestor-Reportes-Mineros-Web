@@ -7,6 +7,10 @@
   @apply m-4 px-2 py-2 bg-black hover:bg-gray-800 active:bg-gray-600 border border-slate-900 rounded-md dark:bg-slate-100 dark:hover:bg-slate-300 dark:active:bg-slate-500 text-white dark:text-black
 }
 
+.buttonPop-up{
+  @apply px-2 py-2 bg-black hover:bg-gray-800 active:bg-gray-600 border border-slate-900 rounded-md dark:bg-slate-100 dark:hover:bg-slate-300 dark:active:bg-slate-500 text-white dark:text-black
+}
+
 .loginInput{
   @apply mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md dark:border-gray-600  text-sm shadow-sm dark:placeholder-black dark:focus:border-orange-400 dark:focus:ring-orange-600 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 invalid:border-red-500 invalid:text-red-600 focus:invalid:border-red-500 focus:invalid:ring-red-500
 }
