@@ -34,7 +34,7 @@ export class AuthService {
         const { email, password, name, lastName, userType} = registerDto;
         let tipo;
         const user = await this.usuarioService.findOneCorreo(email);
-        if (user) return { validEmail: false };
+        if (user!==null) return { validEmail: false };
         if (userType === 'Administrador'){
             tipo = 0;
         }else{
