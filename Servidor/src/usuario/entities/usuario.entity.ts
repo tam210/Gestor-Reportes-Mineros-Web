@@ -26,5 +26,5 @@ export class Usuario extends Model<Usuario>{
         allowNull: false,
         defaultValue: 1, //1=pendiente
     })
-    estado: number;
+    estado: number;//hola
 }

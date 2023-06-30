@@ -34,6 +34,7 @@ export class UsuarioService {
       } 
     } );
   }
+  
 
   async findAllWithPassword() {
     return await this.usuarioModel.findAll({ 
