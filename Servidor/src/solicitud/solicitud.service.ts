@@ -12,10 +12,10 @@ export class SolicitudService {
   ) {}
 
   async createSolicitud(createSolicitudDto: CreateSolicitudDto){
-    const { idusuario, fecha } = createSolicitudDto;
-    return this.solicitudModel.create({ idusuario, fecha });
+    const { correo } = createSolicitudDto;
+    const id = await this.solicitudModel.count();
+    return this.solicitudModel.create({ idsolicitud:id+1,correo:correo });
   }
-
 
   async findAll() {
     return this.solicitudModel.findAll();

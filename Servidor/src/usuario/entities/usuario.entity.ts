@@ -1,4 +1,4 @@
-import { Column, Model, Table} from 'sequelize-typescript'
+import { AutoIncrement, Column, Model, PrimaryKey, Table} from 'sequelize-typescript'
 
 @Table({
     //nombre de la tabla en la bd
@@ -8,16 +8,14 @@ import { Column, Model, Table} from 'sequelize-typescript'
     timestamps: false
 })
 export class Usuario extends Model<Usuario>{
-    @Column({
-        primaryKey: true,
-    })
-    idusuario: number;
+    
+    @PrimaryKey
+    @Column
+    correo: string;
     @Column
     nombre: string;
     @Column
     apellido: string;
-    @Column
-    correo: string;
     @Column
     pass: string;
     @Column

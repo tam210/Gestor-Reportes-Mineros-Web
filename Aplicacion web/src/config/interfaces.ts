@@ -4,9 +4,8 @@ export interface LoginResponse{
 }
 
 export interface UserLoginResponse{
-    email: string,
-    id: string,
-    password: string,
-    username: string,
-    type: string
+    validEmail: boolean,
+    validPassword: boolean,
+    userType: number,
+    userActive: boolean
 }
