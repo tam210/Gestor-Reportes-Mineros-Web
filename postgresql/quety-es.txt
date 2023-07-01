@@ -76,21 +76,22 @@ v3
 --
 
 CREATE VIEW prekpirajo AS
-	SELECT viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, 
+	SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
 		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
 	FROM viaje
 		JOIN origen ON viaje.idorigen = origen.idorigen
 		JOIN zona ON origen.idzona = zona.idzona
 		JOIN rajo ON zona.idrajo = rajo.idrajo
 		JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
-	GROUP BY viaje.idfecha, zona.idrajo, rajo.nombre, kpi.esperado, zona.nombre
+		JOIN fecha ON viaje.idfecha = fecha.idfecha
+	GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.esperado, zona.nombre
 	ORDER BY zona.idrajo, viaje.idfecha;
 
-SELECT rajonombre, idfecha, idrajo, SUM(real) AS rajoreal,
+SELECT rajonombre, fecha, SUM(real) AS rajoreal,
 	SUM(esperado) AS esperadokpi
 FROM prekpirajo
-GROUP BY rajonombre, idfecha, idrajo
-ORDER BY rajonombre, idfecha; 
+GROUP BY rajonombre, fecha, idrajo
+ORDER BY rajonombre, fecha; 
 
 
 ==================================================
@@ -107,12 +108,18 @@ dejaría la consulta ordenada por dia y cada dia ordenada por rajo y cada rajo p
 Incluye nombre de rajo y zona.
 */
 
-SELECT viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, kpi.idzona, zona.nombre AS zonanombre,
-	SUM (viaje.tonelajereal) as real, kpi.esperado
-FROM viaje
-	JOIN origen ON viaje.idorigen = origen.idorigen
-	JOIN zona ON origen.idzona = zona.idzona
-	JOIN rajo ON zona.idrajo = rajo.idrajo
-	JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
-GROUP BY viaje.idfecha, zona.idrajo, rajo.nombre, kpi.idzona, zona.nombre, kpi.esperado
-ORDER BY zona.idrajo, kpi.idzona, viaje.idfecha; 
+CREATE VIEW prekpizona AS
+	SELECT fecha.fecha, viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, kpi.idzona, 
+		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+	FROM viaje
+		JOIN origen ON viaje.idorigen = origen.idorigen
+		JOIN zona ON origen.idzona = zona.idzona
+		JOIN rajo ON zona.idrajo = rajo.idrajo
+		JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
+		JOIN fecha ON viaje.idfecha = fecha.idfecha
+	GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.idzona, zona.nombre, kpi.esperado
+	ORDER BY zona.idrajo, kpi.idzona, viaje.idfecha;
+
+SELECT rajonombre, fecha, zonanombre, real, esperado
+FROM prekpizona; 
+
