@@ -76,23 +76,22 @@ v3
 --
 
 CREATE VIEW prekpirajo AS
-	SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
-		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
-	FROM viaje
-		JOIN origen ON viaje.idorigen = origen.idorigen
-		JOIN zona ON origen.idzona = zona.idzona
-		JOIN rajo ON zona.idrajo = rajo.idrajo
-		JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
-		JOIN fecha ON viaje.idfecha = fecha.idfecha
-	GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.esperado, zona.nombre
-	ORDER BY zona.idrajo, viaje.idfecha;
+	SELECT rajonombre, fecha, idfecha, SUM(real) AS rajoreal, SUM(esperado) AS esperadokpi
+	FROM (SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
+			zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+		FROM viaje
+			JOIN origen ON viaje.idorigen = origen.idorigen
+			JOIN zona ON origen.idzona = zona.idzona
+			JOIN rajo ON zona.idrajo = rajo.idrajo
+			JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
+			JOIN fecha ON viaje.idfecha = fecha.idfecha
+		GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.esperado, zona.nombre
+		ORDER BY zona.idrajo, viaje.idfecha) AS protokpirajo
+	GROUP BY rajonombre, fecha, idfecha, idrajo
+	ORDER BY rajonombre, fecha;
 
-SELECT rajonombre, fecha, SUM(real) AS rajoreal,
-	SUM(esperado) AS esperadokpi
-FROM prekpirajo
-GROUP BY rajonombre, fecha, idrajo
-ORDER BY rajonombre, fecha; 
-
+SELECT rajonombre, fecha, rajoreal, esperadokpi
+FROM prekpirajo;
 
 ==================================================
 2) fecha,rajo,zona,tonelaje real,tonelaje esperado
