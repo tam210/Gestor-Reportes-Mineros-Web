@@ -1,11 +1,16 @@
 import pandas as pd
 import psycopg2
 import os
+import shutil
+import subprocess
+
+import random
 
 def lectura(archivo, cursor):
     current_dir = os.path.dirname(os.path.realpath(__file__)) 
     filename = os.path.join(current_dir, archivo) 
     df = pd.read_csv(filename, delimiter=";", encoding='latin-1')
+    df = df.dropna()
     insertarFlota(cursor,df)
     insertarCamion(cursor,df)
     insertarRajo(cursor,df)
@@ -17,7 +22,7 @@ def lectura(archivo, cursor):
     insertarViaje(cursor,df)
 
 def buscarID(tabla,columna,cursor,idBuscar, dato):
-    quer = str("SELECT "+idBuscar+" FROM "+tabla+" WHERE "+columna+" = '"+dato+"'")
+    quer = str("SELECT "+idBuscar+" FROM "+tabla+" WHERE "+columna+" = '"+str(dato)+"'")
     cursor.execute(quer)
     a = cursor.fetchone()
     if a == None:
@@ -99,8 +104,6 @@ def insertarCamion(cursor,dataFrame):
         y = buscarID("flota","nombre",cursor,"idflota",x)
         if y[1] == 1:
             idsFlota.append(y[0])
-        else:
-            print("si")
     
     camion['idcamion'] = idsCamion
     camion['idflota'] = idsFlota
@@ -169,8 +172,6 @@ def insertarDestino(cursor,dataFrame):
         y = buscarID("Rajo","nombre",cursor,"idrajo",x)
         if y[1] == 1:
             idsRajo.append(y[0])
-        else:
-            print("si")
     
     Destino['iddestino'] = idsDestino
     Destino['idrajo'] = idsRajo
@@ -365,7 +366,6 @@ def insertarViaje(cursor,dataFrame):
             idsViaje.append(y[0]+suma)
             suma += 1
         else:
-            print("si")
             Viaje = Viaje.drop(index)
         
     Viaje['idCarguio'] = idsCargio
@@ -398,14 +398,68 @@ def insertarViaje(cursor,dataFrame):
 
     cursor.executemany(insert_query, Viaje.values.tolist())
 
+def buscarArchivo(cursor):
+    #carpeta del proyecto
+    carpeta = os.getcwd()
+
+    #carpeta en la que se encuentra los archivos guardados
+    carpeta = carpeta + str("\postgresql")
+
+    # se crea una lista de todos los archivos dentro de la carpeta
+    archivos = os.listdir(carpeta)
+
+    for archivo in archivos:
+        if archivo.endswith(".csv"):
+            lectura(archivo,cur)
+            moverArchivo(archivo)
+
+def moverArchivo(archivo):
+    #carpeta del proyecto
+    carpeta = os.getcwd()
+
+    #carpeta en la que se encuentra los archivos guardados
+    carpeta = carpeta + str("\postgresql")
+
+    rutaActual = os.path.join(carpeta,archivo)
+
+    destino = carpeta + str("\Procesados")
+
+    shutil.move(rutaActual,destino)
+
+def aleatorio(cursor):
+    
+    quer = str("SELECT fecha.IDfecha, zona.idzona, SUM (viaje.tonelajereal) as real FROM viaje JOIN origen ON viaje.idorigen = origen.idorigen JOIN zona ON origen.idzona = zona.idzona JOIN rajo ON rajo.idrajo = zona.idrajo JOIN fecha ON fecha.idfecha = viaje.idfecha GROUP BY fecha.idfecha, zona.idzona,rajo.idrajo ORDER BY fecha.idfecha,zona.idzona")
+    cursor.execute(quer)
+    a = cursor.fetchall()
+    kpi = pd.DataFrame(a,columns=['idfecha','idzona','real'])
+    ids = []
+    esperado = []
+    idn = 0
+    for valor in kpi['real']:
+        numero = random.randint(-10,10)
+        porcentaje = 100 + numero
+        nuevo = valor*porcentaje/100
+        esperado.append(nuevo)
+        ids.append(idn)
+        idn += 1
+    kpi['idkpi'] = ids
+    kpi['esperado'] = esperado
+    kpi = kpi.drop('real',axis=1)
+    orden = ['idkpi','idfecha','idzona','esperado']
+    kpi = kpi[orden]
+    tabla = 'kpi'
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s)".format(tabla, ", ".join(kpi.columns))
+
+    cursor.executemany(insert_query, kpi.values.tolist())
+
+
 
 contra = "codigo16"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 
-archivo = "DatosEjemploDiciembre2.csv"
-
-
-lectura(archivo,cur)
+archivo = buscarArchivo(cur)
+aleatorio(cur)
 conexion.commit()
 conexion.close()
+
