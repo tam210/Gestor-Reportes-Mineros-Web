@@ -1,4 +1,4 @@
-import { Body, Injectable, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, ConflictException, Injectable, NotFoundException, Param, Post } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -12,6 +12,7 @@ enum EstadoUsuario {
   Rechazado = 0,
   Pendiente = 1,
   Aprobado = 2,
+  Eliminado = 3
 }
 
 
@@ -81,6 +82,54 @@ export class UsuarioService {
     usuario.estado = EstadoUsuario.Rechazado;
     return usuario.save();
   }
+
+  async eliminarUsuario(id: string): Promise<void> {
+    const usuario = await this.usuarioModel.findByPk(id);
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    usuario.estado = 4; // Cambiar el estado a "eliminado"
+    await usuario.save();
+  }
+
+
+  async actualizarUsuario(id: string, updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
+    try {
+      const usuarioExistente = await this.usuarioModel.findByPk(id);
+      if (!usuarioExistente) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      
+      // Verificar si se está actualizando a un correo existente
+      if (updateUsuarioDto.correo && updateUsuarioDto.correo !== usuarioExistente.correo) {
+        const usuarioConMismoCorreo = await this.usuarioModel.findOne({
+          where: { correo: updateUsuarioDto.correo },
+        });
+        if (usuarioConMismoCorreo) {
+          throw new ConflictException('El correo proporcionado ya está en uso');
+        }
+      }
+  
+      await usuarioExistente.update(updateUsuarioDto);
+  
+      return usuarioExistente;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   async findAll() {
     console.log('find all')

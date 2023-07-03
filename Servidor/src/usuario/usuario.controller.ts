@@ -36,11 +36,13 @@ export class UsuarioController {
     return this.usuarioService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-  //   return this.usuarioService.update(+id, updateUsuarioDto);
-  // }
-
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() data: UpdateUsuarioDto,
+  ) {
+    return this.usuarioService.actualizarUsuario(id, data);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuarioService.remove(+id);
