@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ReporteService } from './reporte.service';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
@@ -13,9 +13,15 @@ export class ReporteController {
   }
 
   @Get()
-  findAll() {
-    return this.reporteService.findAll();
+  async obtenerPorFiltro(@Query('nombre') nombre?: string, @Query('fechaInicio') fechaInicio?: Date, @Query('fechaFin') fechaFin?: Date) {
+    const reportes = await this.reporteService.obtenerPorNombreRajoFecha(nombre, fechaInicio, fechaFin);
+    return reportes;
   }
+
+  // @Get()
+  // findAll() {
+  //   return this.reporteService.findAll();
+  // }
 
   @Get(':rajonombre')
   async obtenerPorRajoNombre(@Param('rajonombre') rajonombre: string) {
