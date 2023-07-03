@@ -4,12 +4,16 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Usuario } from './entities/usuario.entity';
 import { SolicitudService } from 'src/solicitud/solicitud.service';
+import { Solicitud } from 'src/solicitud/entities/solicitud.entity';
+import { CreateSolicitudDto } from 'src/solicitud/dto/create-solicitud.dto';
 
 @Injectable()
 export class UsuarioService {
+  sequelize: any;
 
   constructor(
     @InjectModel(Usuario) private usuarioModel: typeof Usuario,
+    @InjectModel(Solicitud) private readonly solicitudModel: typeof Solicitud,
     private solicitudService: SolicitudService
   ){}
 
@@ -22,8 +26,49 @@ export class UsuarioService {
       pass: createUsuarioDto.pass,
       tipousuario: createUsuarioDto.tipousuario
     });
-    const solicitud = await this.solicitudService.createSolicitud({correo: createUsuarioDto.correo})
+    return usuario;
+    // const solicitud = await this.solicitudService.createSolicitud({correo: createUsuarioDto.correo})
   }
+
+  async crearUsuarioYSolicitud(usuarioData: CreateUsuarioDto): Promise<any> {
+    const t = await this.usuarioModel.sequelize.transaction();
+    try {
+      // Crear usuario
+      const nuevoUsuario = await this.usuarioModel.create(usuarioData, { transaction: t });
+      console.log("NUEVO USUARIO")
+      // Asignar ID del usuario a la solicitud
+      const solicitudData = new CreateSolicitudDto();
+      
+      solicitudData.idusuario = nuevoUsuario.id;
+      solicitudData.fecha = new Date();
+
+      // Crear solicitud
+      const nuevaSolicitud = await this.solicitudModel.create(solicitudData, { transaction: t });
+
+      await t.commit();
+
+      return {
+        usuario: nuevoUsuario,
+        solicitud: nuevaSolicitud,
+      };
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
+  }
+
+
+  // @Post(':id/estado')
+  // async cambiarEstadoUsuario(@Param('id') id: string, @Body() body: { estado: string }) {
+  //   const { estado } = body;
+  //   if (estado === 'Aprobado') {
+  //     return this.t.aprobarUsuario(id);
+  //   } else if (estado === 'Rechazado') {
+  //     return this.usuarioService.rechazarUsuario(id);
+  //   } else {
+  //     throw new BadRequestException('Estado inválido');
+  //   }
+  // }
 
   async findAll() {
     console.log('find all')

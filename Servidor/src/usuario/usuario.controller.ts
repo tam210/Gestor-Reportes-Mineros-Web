@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Put, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -8,10 +8,11 @@ export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @Post()
-  //Recibe desde el body un 'objeto' 
-  //con los parametros a pasar para crear en userDTO
-    create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuarioService.create(createUsuarioDto);
+  // Recibe desde el body un 'objeto' 
+  // con los parametros a pasar para crear en userDTO
+    async create(@Body() createUsuarioDto: CreateUsuarioDto) {
+      console.log(createUsuarioDto)
+    return await this.usuarioService.crearUsuarioYSolicitud(createUsuarioDto);
   }
 
   @Get()
@@ -33,4 +34,5 @@ export class UsuarioController {
   remove(@Param('id') id: string) {
     return this.usuarioService.remove(+id);
   }
+
 }
