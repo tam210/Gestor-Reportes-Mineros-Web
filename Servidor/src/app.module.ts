@@ -29,12 +29,13 @@ import { ReporteService } from './reporte/reporte.service';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Usuario, Solicitud]
+      models: [Usuario, Solicitud, Reporte]
     }),
     UsuarioModule,
     AuthModule,
     SolicitudModule,
     ReporteModule,
+    SequelizeModule.forFeature([Reporte])
   ],
   controllers: [AppController],
   providers: [AppService],

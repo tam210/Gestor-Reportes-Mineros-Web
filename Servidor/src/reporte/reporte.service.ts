@@ -7,16 +7,24 @@ import { Reporte } from './entities/reporte.entity';
 @Injectable()
 export class ReporteService {
   constructor(
-    @InjectModel(Reporte) private reporteModel: typeof Reporte,
+    @InjectModel(Reporte) private readonly reporteModel: typeof Reporte,
   ){}
 
   create(createReporteDto: CreateReporteDto) {
     return 'This action adds a new reporte';
   }
 
-  async findAll() {
-    console.log("Obteniendo reporte")
-    return await this.reporteModel.findAll();
+  async findAll(): Promise<Reporte[]> {
+    return this.reporteModel.findAll({
+      attributes: ['rajonombre', 'fecha', 'idfecha', 'rajoreal', 'esperadokpi'],
+    });
+  }
+
+  async obtenerPorRajoNombre(rajonombre: string): Promise<Reporte[]> {
+    return this.reporteModel.findAll({
+      where: { rajonombre },
+      attributes: ['rajonombre', 'fecha', 'idfecha', 'rajoreal', 'esperadokpi'],
+    });
   }
 
   findOne(id: number) {

@@ -1,21 +1,21 @@
-import { Column, Model, Table } from 'sequelize-typescript';
-@Table({ tableName: 'prekpirajo', modelName: 'Reporte', freezeTableName: true })
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-//Vista PREKPIRAJO
-export class Reporte extends Model<Reporte> {
-    
-  @Column
+@Table({ tableName: 'prekpirajo',
+ modelName: 'Reporte', 
+ freezeTableName: true })
+export class Reporte extends Model {
+  @Column({ type: DataType.STRING })
   rajonombre: string;
 
-  @Column
+  @Column({ type: DataType.DATE })
   fecha: Date;
 
-  @Column
+  @Column({ type: DataType.INTEGER })
   idfecha: number;
 
-  @Column
+  @Column({ type: DataType.INTEGER })
   rajoreal: number;
 
-  @Column
+  @Column({ type: DataType.INTEGER })
   esperadokpi: number;
 }

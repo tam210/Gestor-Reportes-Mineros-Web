@@ -17,10 +17,15 @@ export class ReporteController {
     return this.reporteService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reporteService.findOne(+id);
+  @Get(':rajonombre')
+  async obtenerPorRajoNombre(@Param('rajonombre') rajonombre: string) {
+    return this.reporteService.obtenerPorRajoNombre(rajonombre);
   }
+
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.reporteService.findOne(+id);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReporteDto: UpdateReporteDto) {
