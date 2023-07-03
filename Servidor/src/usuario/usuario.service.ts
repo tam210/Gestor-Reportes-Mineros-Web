@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable, NotFoundException, Param, Post } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -7,6 +7,14 @@ import { SolicitudService } from 'src/solicitud/solicitud.service';
 import { Solicitud } from 'src/solicitud/entities/solicitud.entity';
 import { CreateSolicitudDto } from 'src/solicitud/dto/create-solicitud.dto';
 
+
+enum EstadoUsuario {
+  Rechazado = 0,
+  Pendiente = 1,
+  Aprobado = 2,
+}
+
+
 @Injectable()
 export class UsuarioService {
   sequelize: any;
@@ -14,7 +22,6 @@ export class UsuarioService {
   constructor(
     @InjectModel(Usuario) private usuarioModel: typeof Usuario,
     @InjectModel(Solicitud) private readonly solicitudModel: typeof Solicitud,
-    private solicitudService: SolicitudService
   ){}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
@@ -27,7 +34,6 @@ export class UsuarioService {
       tipousuario: createUsuarioDto.tipousuario
     });
     return usuario;
-    // const solicitud = await this.solicitudService.createSolicitud({correo: createUsuarioDto.correo})
   }
 
   async crearUsuarioYSolicitud(usuarioData: CreateUsuarioDto): Promise<any> {
@@ -56,19 +62,25 @@ export class UsuarioService {
       throw error;
     }
   }
+  
+  async aprobarUsuario(id: string): Promise<Usuario> {
+    const usuario = await this.usuarioModel.findByPk(id);
 
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    usuario.estado = EstadoUsuario.Aprobado;
+    return usuario.save();
+  }
 
-  // @Post(':id/estado')
-  // async cambiarEstadoUsuario(@Param('id') id: string, @Body() body: { estado: string }) {
-  //   const { estado } = body;
-  //   if (estado === 'Aprobado') {
-  //     return this.t.aprobarUsuario(id);
-  //   } else if (estado === 'Rechazado') {
-  //     return this.usuarioService.rechazarUsuario(id);
-  //   } else {
-  //     throw new BadRequestException('Estado inválido');
-  //   }
-  // }
+  async rechazarUsuario(id: string): Promise<Usuario> {
+    const usuario = await this.usuarioModel.findByPk(id);
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    usuario.estado = EstadoUsuario.Rechazado;
+    return usuario.save();
+  }
 
   async findAll() {
     console.log('find all')

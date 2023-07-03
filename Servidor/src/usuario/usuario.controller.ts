@@ -15,6 +15,17 @@ export class UsuarioController {
     return await this.usuarioService.crearUsuarioYSolicitud(createUsuarioDto);
   }
 
+  @Patch(':id/aprobar')
+  async aprobarUsuario(@Param('id') id: string) {
+    console.log("entrando")
+    return this.usuarioService.aprobarUsuario(id);
+  }
+
+  @Patch(':id/rechazar')
+  async rechazarUsuario(@Param('id') id: string){
+    return this.usuarioService.rechazarUsuario(id);
+  }
+
   @Get()
   findAll() {
     return this.usuarioService.findAll();
@@ -25,10 +36,10 @@ export class UsuarioController {
     return this.usuarioService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuarioService.update(+id, updateUsuarioDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+  //   return this.usuarioService.update(+id, updateUsuarioDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
