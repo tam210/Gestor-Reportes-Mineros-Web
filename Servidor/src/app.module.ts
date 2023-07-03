@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsuarioModule } from './usuario/usuario.module';
@@ -9,6 +9,11 @@ import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './middlewares/jwt-middleware';
 import { SolicitudModule } from './solicitud/solicitud.module';
 import { Solicitud } from './solicitud/entities/solicitud.entity';
+import { ReporteController } from './reporte/reporte.controller';
+import { ReporteModule } from './reporte/reporte.module';
+import { Reporte } from './reporte/entities/reporte.entity';
+import sequelize from 'sequelize';
+import { ReporteService } from './reporte/reporte.service';
 
 @Module({
   imports: [
@@ -28,7 +33,9 @@ import { Solicitud } from './solicitud/entities/solicitud.entity';
     }),
     UsuarioModule,
     AuthModule,
-    SolicitudModule],
+    SolicitudModule,
+    ReporteModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -36,6 +43,8 @@ export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer){
     consumer
     .apply(JwtMiddleware)
+    //que se pueda crear un usuario sin un token
+    .exclude({ path: 'usuario', method: RequestMethod.POST })
     .forRoutes('usuario');
   }
 }

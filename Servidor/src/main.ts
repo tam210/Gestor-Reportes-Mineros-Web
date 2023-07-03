@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { ETLScheduler } from './schedulers/etl.schedulers';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,10 @@ async function bootstrap() {
 
   // Habilitar el middleware CORS
   app.enableCors(corsOptions);
+
+  // Inicia el planificador de tareas ETL
+  const etlScheduler = new ETLScheduler();
+  etlScheduler.start();
 
   await app.listen(3001);
 }

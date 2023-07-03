@@ -6,7 +6,8 @@ import { Usuario } from './entities/usuario.entity';
 import { SolicitudModule } from 'src/solicitud/solicitud.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Usuario]),SolicitudModule],
+  imports: [SequelizeModule.forFeature([Usuario]),
+            SolicitudModule],
   controllers: [UsuarioController],
   providers: [UsuarioService],
   exports: [UsuarioService]

@@ -31,7 +31,7 @@ def creacionTablasUsuarios(cursor):
     cursor.execute(tabla_usuario)
     cursor.execute(tabla_solicitudes)
 
-contra = "codigo16"
+contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 

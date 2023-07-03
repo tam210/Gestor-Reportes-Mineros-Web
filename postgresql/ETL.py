@@ -463,7 +463,7 @@ def aleatorio(cursor):
 
 
 
-contra = "codigo16"
+contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 

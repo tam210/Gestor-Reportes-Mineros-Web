@@ -8,7 +8,6 @@ import { AutoIncrement, Column, Model, PrimaryKey, Table} from 'sequelize-typesc
     timestamps: false
 })
 export class Usuario extends Model<Usuario>{
-    
     @PrimaryKey
     @Column
     correo: string;
