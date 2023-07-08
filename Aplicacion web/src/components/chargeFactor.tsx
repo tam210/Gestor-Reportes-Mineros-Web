@@ -29,11 +29,11 @@ function ChargeFactor() {
         </div>  
         <div className='flex flex-col mt-8 mx-6'>
             <div className='max-w-[200px] sm:max-w-[300px] self-center'>
-                <img className='w-full h-auto' src="/images/camion.png"/>
+                <img className='w-full h-auto dark:invert' src="/images/camion.png"/>
             </div>
-            <div className='flex flex-col sm:flex-row'>
+            <div className='flex dark:text-white flex-col sm:flex-row'>
                 <div className='sm:mx-4'>
-                    <label className="block my-3">
+                    <label className="flex my-3">
                         <span>Flota:</span>
                         <select className='mx-3 w-full' name="fleet" id="">
                             {/* {options.map((option) => (
@@ -43,7 +43,7 @@ function ChargeFactor() {
                             ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
                         </select>
                     </label>
-                    <label className="block my-3">
+                    <label className="flex my-3">
                         <span>Fase:</span>
                         <select className='mx-3 w-full' name="fleet" id="">
                             {/* {options.map((option) => (
@@ -71,7 +71,7 @@ function ChargeFactor() {
                     </label>
                 </div>
             </div>
-            <div className='flex flex-col sm:self-center'>
+            <div className='flex dark:text-white flex-col sm:self-center'>
                 <div>
                     <label className="block my-3">
                         <span>Factor de carga:</span>
