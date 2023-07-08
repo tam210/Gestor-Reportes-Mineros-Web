@@ -23,7 +23,7 @@ const sendUpdate = async (user) => {
       Authorization: 'Bearer '+localStorage.getItem('token')
     }
   };
-  const response = await axios.post(ENDPOINT, token,user);
+  const response = await axios.patch(ENDPOINT, token,user);
   return response.data;
 }
 
@@ -70,7 +70,7 @@ function Users() {
           <TopBar message='Usuarios'/>
         </div>
         <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
-          <div className="flex w-full dark:bg-white">
+          <div className="flex w-full dark:bg-gray-400">
             <DataGrid rows={rows} columns={columns} apiRef={apiRef} onCellEditStop={updateRow}/>
           </div>
           <div className='flex self-center'>
