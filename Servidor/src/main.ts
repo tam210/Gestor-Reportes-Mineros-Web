@@ -9,7 +9,7 @@ async function bootstrap() {
   // Configurar las opciones de CORS
   const corsOptions: CorsOptions = {
     origin: 'http://localhost:3000', // Reemplaza con la URL de tu aplicación Next.js
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+    methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Métodos HTTP permitidos
     allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
     preflightContinue: false,
     optionsSuccessStatus: 204,

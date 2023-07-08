@@ -16,15 +16,17 @@ function Request() {
         { id: 3, firstName: 'Bob', lastName: 'Johnson', age: 45 },
     ];
   return (
-    <div>
-        <TopBar/>
-        <div>
-            <DataGrid columns={columns} rows={rows}/>
-            <div>
-                <button className='button'>Permitir</button>
-                <button className='button'>Denegar</button>
-            </div>
+    <div className='flex flex-col h-screen w-full dark:bg-black'>
+      <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+        <TopBar message="Solicitudes de acceso"/>
+      </div>
+      <div className='flex flex-col m-4 sm:m-6'>
+        <DataGrid className='bg-gray-400 mb-2' columns={columns} rows={rows}/>
+        <div className='flex flex-row self-center'>
+            <button className='button'>Permitir</button>
+            <button className='button'>Denegar</button>
         </div>
+      </div>
     </div>
   )
 }
