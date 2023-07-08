@@ -26,8 +26,7 @@ export class AuthService {
      
         const payload = {email}
         const userType = user.tipousuario;
-        if (userType === 0 || userType === 1)return {token: this.jwtService.sign(payload), user:{validEmail:true, validPassword:true, userType:user.tipousuario}};
-        return {token: null, user:{validEmail:true, validPassword:true, userType:user.tipousuario}}
+        return {token: this.jwtService.sign(payload), user:{validEmail:true, validPassword:true, userType:user.tipousuario, userActive:true}};
     }
 
     async register(registerDto: RegisterDto){

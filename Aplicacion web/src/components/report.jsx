@@ -3,6 +3,19 @@ import { DataGrid } from '@mui/x-data-grid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TopBar from './common/topBar'
+import axios from 'axios';
+
+const handleReports = async () => {
+    const ENDPOINT = 'http://localhost:3001/reports';
+    const data = {};
+    const token = {
+      headers:{
+        Authorization: 'Bearer '+localStorage.getItem('token')
+      }
+    };
+    const response = await axios.get(ENDPOINT, token)
+    return response.data;
+  }
 
 function Report() {
     const columns = [
@@ -25,8 +38,10 @@ function Report() {
     };
 
     return (
-        <div>
-            <TopBar message="Reportes"/>
+        <div className='flex flex-col h-screen w-full dark:bg-black'>
+            <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+                <TopBar message="Reportes"/>
+            </div>
             <div>
                 <div>
                     <label className='block'>
