@@ -6,6 +6,7 @@ import { Usuario } from './entities/usuario.entity';
 import { SolicitudService } from 'src/solicitud/solicitud.service';
 import { Solicitud } from 'src/solicitud/entities/solicitud.entity';
 import { CreateSolicitudDto } from 'src/solicitud/dto/create-solicitud.dto';
+import { AprobarRechazarUsuarioDto } from './dto/aprobar-rechazar-usuario.dto';
 
 
 enum EstadoUsuario {
@@ -14,7 +15,6 @@ enum EstadoUsuario {
   Aprobado = 2,
   Eliminado = 3
 }
-
 
 @Injectable()
 export class UsuarioService {
@@ -63,26 +63,23 @@ export class UsuarioService {
       throw error;
     }
   }
+
+  async decidirUsuario(usuarioData: AprobarRechazarUsuarioDto): Promise<Usuario> {
+    const decision = usuarioData.estado
+    const usuario = await this.usuarioModel.findByPk(usuarioData.id);
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    if(decision==EstadoUsuario.Aprobado){
+      usuario.estado = EstadoUsuario.Aprobado;
+    }else if (decision==EstadoUsuario.Rechazado){
+      usuario.estado = EstadoUsuario.Rechazado;      
+    }else{
+      throw new NotFoundException('Estado no existente');
+    }
+    return usuario.save();
+  }
   
-  async aprobarUsuario(id: string): Promise<Usuario> {
-    const usuario = await this.usuarioModel.findByPk(id);
-
-    if (!usuario) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-    usuario.estado = EstadoUsuario.Aprobado;
-    return usuario.save();
-  }
-
-  async rechazarUsuario(id: string): Promise<Usuario> {
-    const usuario = await this.usuarioModel.findByPk(id);
-    if (!usuario) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-    usuario.estado = EstadoUsuario.Rechazado;
-    return usuario.save();
-  }
-
   async eliminarUsuario(id: string): Promise<void> {
     const usuario = await this.usuarioModel.findByPk(id);
     if (!usuario) {
@@ -93,9 +90,9 @@ export class UsuarioService {
   }
 
 
-  async actualizarUsuario(id: string, updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
+  async actualizarUsuario(updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
     try {
-      const usuarioExistente = await this.usuarioModel.findByPk(id);
+      const usuarioExistente = await this.usuarioModel.findByPk(updateUsuarioDto.id);
       if (!usuarioExistente) {
         throw new NotFoundException('Usuario no encontrado');
       }
@@ -117,19 +114,6 @@ export class UsuarioService {
       throw error;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   async findAll() {
     console.log('find all')

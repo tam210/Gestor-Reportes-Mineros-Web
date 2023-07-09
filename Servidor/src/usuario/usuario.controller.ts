@@ -2,6 +2,7 @@ import { Controller, Get, Put, Post, Body, Patch, Param, Delete, BadRequestExcep
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { AprobarRechazarUsuarioDto } from './dto/aprobar-rechazar-usuario.dto';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -15,16 +16,11 @@ export class UsuarioController {
     return await this.usuarioService.crearUsuarioYSolicitud(createUsuarioDto);
   }
 
-  @Patch(':id/aprobar')
-  async aprobarUsuario(@Param('id') id: string) {
-    console.log("entrando")
-    return this.usuarioService.aprobarUsuario(id);
+  @Patch('solicitudes')
+  async aprobarUsuario(@Body() aprobarRechazarUsuarioDto: AprobarRechazarUsuarioDto) {
+    return this.usuarioService.decidirUsuario(aprobarRechazarUsuarioDto);
   }
 
-  @Patch(':id/rechazar')
-  async rechazarUsuario(@Param('id') id: string){
-    return this.usuarioService.rechazarUsuario(id);
-  }
 
   @Get()
   findAll() {
@@ -36,12 +32,11 @@ export class UsuarioController {
     return this.usuarioService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
-    @Param('id') id: string,
-    @Body() data: UpdateUsuarioDto,
+    @Body() userData: UpdateUsuarioDto
   ) {
-    return this.usuarioService.actualizarUsuario(id, data);
+    return this.usuarioService.actualizarUsuario(userData);
   }
   @Delete(':id')
   remove(@Param('id') id: string) {
