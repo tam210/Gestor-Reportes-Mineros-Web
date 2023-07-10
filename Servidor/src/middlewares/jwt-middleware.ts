@@ -1,6 +1,12 @@
 import { HttpException, Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response} from "express";
+import { Usuario } from "src/usuario/entities/usuario.entity";
+
+interface CustomRequest extends Request {
+    user?: Usuario;
+  }
+
 @Injectable()
 export class JwtMiddleware implements NestMiddleware{
     constructor(
@@ -8,7 +14,7 @@ export class JwtMiddleware implements NestMiddleware{
     ){}
     //req: lo que viene del frontend (request)
     //res: lo que responde la api (response)
-    use(req: Request, res: Response, next: NextFunction) {
+    use(req: CustomRequest, res: Response, next: NextFunction) {
         try{
             const tokenH = req.headers.authorization;
             //Verificar si el token viene en el header 
@@ -20,8 +26,19 @@ export class JwtMiddleware implements NestMiddleware{
             //Si el token es null
             if(!token) throw new UnauthorizedException('Token no válido (null)');
             const verificarToken = this.jwtServices.verify(token);
-
+            //Si el token finalmente es válido
             if(!verificarToken) throw new UnauthorizedException('Token no válido (fallo al verificar)');
+
+
+            
+            // Verifico los roles del usuario
+            // const roles = verificarToken.roles;
+            // const requiredRoles = ['admin']; // Roles requeridos para acceder a la ruta (puedes personalizarlo)
+
+            // const hasRequiredRoles = requiredRoles.some((role) => roles.includes(role));
+            // if (!hasRequiredRoles) throw new UnauthorizedException('Acceso denegado');
+
+
             //Continúo
             next();
         }catch(error){

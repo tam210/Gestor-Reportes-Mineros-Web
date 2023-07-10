@@ -14,6 +14,9 @@ import { ReporteModule } from './reporte/reporte.module';
 import { Reporte } from './reporte/entities/reporte.entity';
 import sequelize from 'sequelize';
 import { ReporteService } from './reporte/reporte.service';
+import { RolesGuard } from './roles/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
+
 
 @Module({
   imports: [
@@ -38,14 +41,19 @@ import { ReporteService } from './reporte/reporte.service';
     SequelizeModule.forFeature([Reporte])
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+  {
+    provide: APP_GUARD,
+    useClass: RolesGuard
+  },],
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer){
-    // consumer
-    // .apply(JwtMiddleware)
-    // //que se pueda crear un usuario sin un token
+    consumer
+    .apply(JwtMiddleware)
+    //que se pueda crear un usuario sin un token
     // .exclude({ path: 'usuario', method: RequestMethod.POST })
-    // .forRoutes('usuario');
+
+    .forRoutes('usuario', 'reporte', 'solicitud');
   }
 }

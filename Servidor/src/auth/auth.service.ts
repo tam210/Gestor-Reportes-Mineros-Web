@@ -4,6 +4,7 @@ import { UsuarioService } from 'src/usuario/usuario.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register-user.dto';
 import { CreateUsuarioDto } from 'src/usuario/dto/create-usuario.dto';
+import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
@@ -15,16 +16,14 @@ export class AuthService {
 
     async login(loginDto: LoginDto){
         const { email, password } = loginDto;
-        
         const user = await this.usuarioService.findOneCorreo(email);
-
         if (!user) return {token: null, user:{validEmail:false, validPassword:false, userType:null}};
-
         if (user.pass !== password)return{token: null, user:{validEmail:true, validPassword:false, userType:null}};
-
-        if (user.estado !== 0)return{token:null, user:{validEmail:true, validPassword: true, userType:null, userActive:false}};//estados (0: activo, 1: pendiente, 2:bloqueado)
-     
-        const payload = {email}
+        if (user.estado !== 2)return{token:null, user:{validEmail:true, validPassword: true, userType:null, userActive:false}};//estados (0: rechazadp, 1: pendiente, 2:aprobado, 3: eliminado)
+        const payload = {
+            email: user.correo, 
+            tipousuario: user.tipousuario
+        }
         const userType = user.tipousuario;
         return {token: this.jwtService.sign(payload), user:{validEmail:true, validPassword:true, userType:user.tipousuario, userActive:true}};
     }
