@@ -9,7 +9,7 @@ import { CreateSolicitudDto } from 'src/solicitud/dto/create-solicitud.dto';
 import { AprobarRechazarUsuarioDto } from './dto/aprobar-rechazar-usuario.dto';
 
 
-enum EstadoUsuario {
+export enum EstadoUsuario {
   Rechazado = 0,
   Pendiente = 1,
   Aprobado = 2,
