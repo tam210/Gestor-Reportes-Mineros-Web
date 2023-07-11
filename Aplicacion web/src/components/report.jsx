@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React,{ useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -7,35 +7,42 @@ import axios from 'axios';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 
-const handleReports = async (date,type) => {
-    const ENDPOINT = 'http://localhost:3001/reports';
-    const data = {'fecha':date};
-    const token = {
+const handleReports = async (params) => {
+    const ENDPOINT = 'http://localhost:3001/reporte/';
+    const config = {
+      params: params,  
       headers:{
         Authorization: 'Bearer '+localStorage.getItem('token')
       }
     };
-    //const response = await axios.get(ENDPOINT, token)
-    //return response.data;
-    console.log(date,type)
+    const response = await axios.get(ENDPOINT, config)
+    const data=response.data
+    let id=0
+    data.forEach(element => {
+        element["id"]=id
+        id++
+    });
+    return response.data;
   }
 
 function Report() {
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First Name', width: 150 },
-        { field: 'lastName', headerName: 'Last Name', width: 150 },
-        { field: 'age', headerName: 'Age', type: 'number', width: 90 },
+        { field: 'rajonombre', headerName: 'Nombre del rajo', width: 200 },
+        { field: 'fecha', headerName: 'Fecha', width: 200 },
+        { field: 'rajoreal', headerName: 'Tonelaje real', width: 200 },
+        { field: 'esperadokpi', headerName: 'Tonelaje esperado', type: 'number', width: 200 },
       ];
       
-    const rows = [
-    { id: 1, firstName: 'John', lastName: 'Doe', age: 25 },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 32 },
-    { id: 3, firstName: 'Bob', lastName: 'Johnson', age: 45 },
-    ];
+    const [rows,setRows] = useState([])
 
     const [type,setType] =useState('diary');
     const [selectedDate, setSelectedDate] = useState(new Date());
+    let params = {}
+
+    const obtenerFechaFormateada = fecha => {
+        const options = { year: 'numeric' , month: '2-digit', day: '2-digit'};
+        return fecha.toLocaleDateString('en-US', options);
+      };
 
     function obtenerInicioFinSemanaIso(fecha) {
         const inicioSemana = startOfWeek(fecha, { weekStartsOn: 1 });
@@ -80,19 +87,33 @@ function Report() {
         setType(event.target.value);
     }
 
-    const findReport = () => {
+    const findReport = async() => {
         if(type==="diary"){
-            handleReports(selectedDate,type)
+            params['fechaInicio']=obtenerFechaFormateada(selectedDate)
+            params['fechaFin']=obtenerFechaFormateada(selectedDate)
         }if(type==="weeklyIso"){
-            handleReports(obtenerInicioFinSemanaIso(selectedDate),type)
+            const fechas = obtenerInicioFinSemanaIso(selectedDate)
+            params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
+            params['fechaFin']=obtenerFechaFormateada(fechas.fin)
         }if(type==="weekly"){
-            handleReports(obtenerInicioFinSemana(),type)
+            const fechas = obtenerInicioFinSemana()
+            params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
+            params['fechaFin']=obtenerFechaFormateada(fechas.fin)
         }if(type==="monthly"){
-            handleReports(obtenerInicioFinMes(selectedDate,type),type)
+            const fechas = obtenerInicioFinMes(selectedDate,type)
+            params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
+            params['fechaFin']=obtenerFechaFormateada(fechas.fin)
         }if(type==="annual"){
-            handleReports(obtenerInicioFinMes(selectedDate,type),type)
+            const fechas = obtenerInicioFinMes(selectedDate,type)
+            params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
+            params['fechaFin']=obtenerFechaFormateada(fechas.fin)
         }
+        await handleReports(params).then(rowData=>setRows(rowData))
     }
+
+    useEffect(()=>{
+        handleReports().then(rowData=>setRows(rowData))
+    },[])
 
     return (
         <div className='flex flex-col h-screen w-full dark:bg-black'>
@@ -124,7 +145,7 @@ function Report() {
                     <button className='button flex' onClick={findReport}>Buscar</button>
                     <button className='button flex'>ExportarCSV</button>
                 </div>
-                <div className='dark: bg-gray-400'>
+                <div className='dark:bg-gray-400'>
                     <DataGrid columns={columns} rows={rows}/>
                 </div>
             </div>
