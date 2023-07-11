@@ -104,8 +104,6 @@ def insertarCamion(cursor,dataFrame):
         y = buscarID("flota","nombre",cursor,"idflota",x)
         if y[1] == 1:
             idsFlota.append(y[0])
-        else:
-            print("si")
     
     camion['idcamion'] = idsCamion
     camion['idflota'] = idsFlota
@@ -174,8 +172,6 @@ def insertarDestino(cursor,dataFrame):
         y = buscarID("Rajo","nombre",cursor,"idrajo",x)
         if y[1] == 1:
             idsRajo.append(y[0])
-        else:
-            print("si")
     
     Destino['iddestino'] = idsDestino
     Destino['idrajo'] = idsRajo
@@ -370,7 +366,6 @@ def insertarViaje(cursor,dataFrame):
             idsViaje.append(y[0]+suma)
             suma += 1
         else:
-            print("si")
             Viaje = Viaje.drop(index)
         
     Viaje['idCarguio'] = idsCargio
@@ -403,7 +398,7 @@ def insertarViaje(cursor,dataFrame):
 
     cursor.executemany(insert_query, Viaje.values.tolist())
 
-def buscarArchivo():
+def buscarArchivo(cursor):
     #carpeta del proyecto
     carpeta = os.getcwd()
 
@@ -415,9 +410,8 @@ def buscarArchivo():
 
     for archivo in archivos:
         if archivo.endswith(".csv"):
-            return archivo
-    vacio = "null"
-    return vacio
+            lectura(archivo,cur)
+            moverArchivo(archivo)
 
 def moverArchivo(archivo):
     #carpeta del proyecto
@@ -431,9 +425,6 @@ def moverArchivo(archivo):
     destino = carpeta + str("\Procesados")
 
     shutil.move(rutaActual,destino)
-
-def ejecutar_script_con_parametro(script_path, parametro):
-    subprocess.run(["python", script_path, parametro])
 
 def aleatorio(cursor):
     
@@ -467,16 +458,7 @@ contra = "codigo16"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 
-archivo = buscarArchivo()
-
-if archivo != "null":
-    lectura(archivo,cur)
-    moverArchivo(archivo)
-
-    python = "postgresql\\ActualizacionReporte.py"
-    parametro = archivo
-
-    ejecutar_script_con_parametro(python, parametro)
+archivo = buscarArchivo(cur)
 aleatorio(cur)
 conexion.commit()
 conexion.close()

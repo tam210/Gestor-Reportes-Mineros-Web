@@ -31,12 +31,45 @@ def creacionTablasUsuarios(cursor):
     cursor.execute(tabla_usuario)
     cursor.execute(tabla_solicitudes)
 
+def creacionViews(cursor):
+    ViewRajo = """CREATE VIEW prekpirajo AS
+	SELECT rajonombre, fecha, idfecha, SUM(real) AS rajoreal, SUM(esperado) AS esperadokpi
+	FROM (SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
+			zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+		FROM viaje
+			JOIN origen ON viaje.idorigen = origen.idorigen
+			JOIN zona ON origen.idzona = zona.idzona
+			JOIN rajo ON zona.idrajo = rajo.idrajo
+			JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
+			JOIN fecha ON viaje.idfecha = fecha.idfecha
+		GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.esperado, zona.nombre
+		ORDER BY zona.idrajo, viaje.idfecha) AS protokpirajo
+	GROUP BY rajonombre, fecha, idfecha, idrajo
+	ORDER BY rajonombre, fecha;"""
+
+    ViewZona = """CREATE VIEW prekpizona AS
+	SELECT fecha.fecha, viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, kpi.idzona, 
+		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+	FROM viaje
+		JOIN origen ON viaje.idorigen = origen.idorigen
+		JOIN zona ON origen.idzona = zona.idzona
+		JOIN rajo ON zona.idrajo = rajo.idrajo
+		JOIN kpi ON viaje.idfecha = kpi.idfecha AND zona.idzona = kpi.idzona
+		JOIN fecha ON viaje.idfecha = fecha.idfecha
+	GROUP BY viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre, kpi.idzona, zona.nombre, kpi.esperado
+	ORDER BY zona.idrajo, kpi.idzona, viaje.idfecha;"""
+
+
+    cursor.execute(ViewRajo)
+    cursor.execute(ViewZona)
+
 contra = "codigo16"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 
 creacionTablasDatos(cur)
 creacionTablasUsuarios(cur)
+creacionViews(cur)
 
 conexion.commit()
 conexion.close()
