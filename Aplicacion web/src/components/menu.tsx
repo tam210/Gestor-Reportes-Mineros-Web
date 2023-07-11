@@ -56,7 +56,7 @@ function Menu() {
                             <TopBar message='Menu'/>
                         </div>
                         <div className="sm:mt-36 flex flex-col text-center sm:flex-row lg:text-left">
-                            <div className="md:shrink-0 px-10 max-w-[400px] md:max-w-[450px]">
+                            <div className="md:shrink-0 px-10 max-w-[400px] md:max-w-[470px]">
                                 <img src="/images/camion.png" className="h-full w-auto object-cover dark:invert"/>
                             </div>
                             <div className="lg:w-[100px] xl:w-[200px]"></div>
