@@ -17,27 +17,28 @@ const handleUsers = async () => {
 }
 
 const sendUpdate = async (user) => {
-  const ENDPOINT = 'http://localhost:3001/usuario';
+  const ENDPOINT = 'http://localhost:3001/usuario/';
   const token = {
     headers:{
       Authorization: 'Bearer '+localStorage.getItem('token')
     }
   };
-  const response = await axios.patch(ENDPOINT, token,user);
+  const response = await axios.patch(ENDPOINT,user, token);
   return response.data;
 }
 
 function Users() {
   const [rows, setRows] = React.useState([]);
+  const [rowSelect,setRowSelect]= React.useState(null);
   const apiRef = useGridApiRef();
   let changes = [];
 
   const columns = [
-    { field: 'nombre', headerName: 'First Name', width: 150 ,editable: true},
-    { field: 'apellido', headerName: 'Last Name', width: 150 ,editable: true},
-    { field: 'correo', headerName: 'Correo',type: 'email', width: 150 },
-    { field: 'tipousuario', headerName: 'Tipo de usuario', width: 150 },
-    { field: 'estado', headerName: 'Estado', width: 150 },
+    { field: 'nombre', headerName: 'First Name', width: 250 ,editable: true},
+    { field: 'apellido', headerName: 'Last Name', width: 250 ,editable: true},
+    { field: 'correo', headerName: 'Correo',type: 'email', width: 250 },
+    { field: 'tipousuario', headerName: 'Tipo de usuario', width: 250 },
+    { field: 'estado', headerName: 'Estado', width: 250 },
   ];
 
   const handleConfirmButton = async ()=>{
@@ -51,6 +52,21 @@ function Users() {
     }
     changes=[]
   }
+
+  const blockUser = async ()=>{
+    await sendUpdate({"id":rowSelect.id,"estadoText":"Bloqueado"})
+    handleUsers().then(rowData=>setRows(rowData))
+  }
+
+  const unBlockUser = async ()=>{
+    await sendUpdate({"id":rowSelect.id,"estadoText":"Aprobado"})
+    handleUsers().then(rowData=>setRows(rowData))
+  }
+
+  const changeRowSelect = (event)=>{
+    setRowSelect(event.row)
+  }
+
 
   const handleCancelButton = ()=>{
     apiRef.current.setRows(rows)
@@ -70,12 +86,14 @@ function Users() {
           <TopBar message='Usuarios'/>
         </div>
         <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
-          <div className="flex w-full dark:bg-gray-400">
-            <DataGrid rows={rows} columns={columns} apiRef={apiRef} onCellEditStop={updateRow}/>
+          <div className="flex w-full dark:bg-gray-400 ">
+            <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
           </div>
           <div className='flex self-center'>
               <button className='button' onClick={handleConfirmButton}>Guardar</button>
               <button className='button' onClick={handleCancelButton}>Cancelar</button>
+              <button className='button' onClick={blockUser}>Bloquear</button>
+              <button className='button' onClick={unBlockUser}>Desbloquear</button>
           </div>
         </div>
     </div>
