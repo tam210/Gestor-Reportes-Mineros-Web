@@ -19,7 +19,7 @@ export class AuthService {
         const user = await this.usuarioService.findOneCorreo(email);
         if (!user) return {token: null, user:{validEmail:false, validPassword:false, userType:null}};
         if (user.pass !== password)return{token: null, user:{validEmail:true, validPassword:false, userType:null}};
-        if (user.estado !== 2)return{token:null, user:{validEmail:true, validPassword: true, userType:null, userActive:false}};//estados (0: rechazadp, 1: pendiente, 2:aprobado, 3: eliminado)
+        if (user.estado !== 2)return{token:null, user:{validEmail:true, validPassword: true, userType:null, userActive:false}};//estados (0: rechazado, 1: pendiente, 2:aprobado, 3: eliminado)
         const payload = {
             email: user.correo, 
             tipousuario: user.tipousuario

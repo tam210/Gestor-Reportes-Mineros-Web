@@ -7,6 +7,7 @@ import { SolicitudService } from 'src/solicitud/solicitud.service';
 import { Solicitud } from 'src/solicitud/entities/solicitud.entity';
 import { CreateSolicitudDto } from 'src/solicitud/dto/create-solicitud.dto';
 import { AprobarRechazarUsuarioDto } from './dto/aprobar-rechazar-usuario.dto';
+import { Op } from 'sequelize';
 
 
 export enum EstadoUsuario {
@@ -70,9 +71,9 @@ export class UsuarioService {
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    if(decision==EstadoUsuario.Aprobado){
+    if(decision===EstadoUsuario.Aprobado){
       usuario.estado = EstadoUsuario.Aprobado;
-    }else if (decision==EstadoUsuario.Rechazado){
+    }else if (decision===EstadoUsuario.Rechazado){
       usuario.estado = EstadoUsuario.Rechazado;      
     }else{
       throw new NotFoundException('Estado no existente');
@@ -92,11 +93,31 @@ export class UsuarioService {
 
   async actualizarUsuario(updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
     try {
+      console.log("update")
       const usuarioExistente = await this.usuarioModel.findByPk(updateUsuarioDto.id);
       if (!usuarioExistente) {
         throw new NotFoundException('Usuario no encontrado');
       }
       
+      const diccionario = {
+        "Administrador":0,
+        "Usuario":1,
+        "Rechazado":0,
+        "Pendiente":1,
+        "Aprobado":2,
+        "Bloqueado":3
+      }
+
+      updateUsuarioDto.tipousuario = diccionario[updateUsuarioDto.tipousuario]
+      if(updateUsuarioDto.estadoText!==null){
+        const user ={
+          "id":updateUsuarioDto.id,
+          "estado":diccionario[updateUsuarioDto.estadoText]
+        }
+        await usuarioExistente.update(user)
+        return usuarioExistente 
+      }
+
       // Verificar si se está actualizando a un correo existente
       if (updateUsuarioDto.correo && updateUsuarioDto.correo !== usuarioExistente.correo) {
         const usuarioConMismoCorreo = await this.usuarioModel.findOne({
@@ -122,9 +143,17 @@ export class UsuarioService {
         exclude: ['pass'], 
         include: [
           [
-            this.usuarioModel.sequelize.literal("CASE WHEN tipousuario = 0 THEN 'admin' WHEN tipousuario = 1 THEN 'usuario' WHEN tipousuario = 2 THEN 'pendiente' END"),'tipousuario', //Convierte el numero del tipo usuario a texto para mostrar
+            this.usuarioModel.sequelize.literal("CASE WHEN tipousuario = 0 THEN 'Administrador' WHEN tipousuario = 1 THEN 'Usuario' END"),'tipousuario', //Convierte el numero del tipo usuario a texto para mostrar
+          ],
+          [
+            this.usuarioModel.sequelize.literal("CASE WHEN estado = 0 THEN 'Rechazado' WHEN estado = 1 THEN 'Pendiente' WHEN estado = 2 THEN 'Aprobado' WHEN estado = 3 THEN 'Bloqueado' END"),'estado'
           ]
         ]
+      },
+      where:{
+        estado:{
+          [Op.not]: 1 //Omite los usuarios con estado pendiente
+        }
       } 
     } );
   }
