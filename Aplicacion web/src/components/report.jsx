@@ -21,16 +21,18 @@ const handleReports = async (params) => {
     data.forEach(element => {
         element["id"]=id
         id++
+        element["kpi"]=element["rajoreal"]>element["esperadokpi"]
     });
     return response.data;
   }
 
 function Report() {
     const columns = [
-        { field: 'rajonombre', headerName: 'Nombre del rajo', width: 200 },
-        { field: 'fecha', headerName: 'Fecha', width: 200 },
-        { field: 'rajoreal', headerName: 'Tonelaje real', width: 200 },
-        { field: 'esperadokpi', headerName: 'Tonelaje esperado', type: 'number', width: 200 },
+        { field: 'rajonombre', headerName: 'Nombre del rajo', minWidth: 200 },
+        { field: 'fecha', headerName: 'Fecha', minWidth: 200 },
+        { field: 'rajoreal', headerName: 'Tonelaje real', minWidth: 200 },
+        { field: 'esperadokpi', headerName: 'Tonelaje esperado', minWidth: 200 },
+        { field: 'kpi', headerName: 'KPI', minWidth:150 }
       ];
       
     const [rows,setRows] = useState([])
@@ -145,8 +147,8 @@ function Report() {
                     <button className='button flex' onClick={findReport}>Buscar</button>
                     <button className='button flex'>ExportarCSV</button>
                 </div>
-                <div className='dark:bg-gray-400'>
-                    <DataGrid columns={columns} rows={rows}/>
+                <div className='flex lg:mx-auto dark:bg-gray-400'>
+                    <DataGrid className='flex' columns={columns} rows={rows} />
                 </div>
             </div>
         </div>
