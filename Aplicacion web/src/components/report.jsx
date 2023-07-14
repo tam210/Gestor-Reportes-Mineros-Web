@@ -21,7 +21,12 @@ const handleReports = async (params) => {
     data.forEach(element => {
         element["id"]=id
         id++
-        element["kpi"]=element["rajoreal"]>element["esperadokpi"]
+        if(element["rajoreal"]<element["esperadokpi"]){
+            element["kpi"]="/images/Señales/pngwing.com (3).png"
+        }else{
+            element["kpi"]="/images/Señales/pngwing.com (4).png"
+        }
+        
     });
     return response.data;
   }
@@ -32,7 +37,7 @@ function Report() {
         { field: 'fecha', headerName: 'Fecha', minWidth: 200 },
         { field: 'rajoreal', headerName: 'Tonelaje real', minWidth: 200 },
         { field: 'esperadokpi', headerName: 'Tonelaje esperado', minWidth: 200 },
-        { field: 'kpi', headerName: 'KPI', minWidth:150 }
+        { field: 'kpi', headerName: 'KPI', renderCell: (params)=> <img src={params.value} /> ,width:60}
       ];
       
     const [rows,setRows] = useState([])

@@ -12,12 +12,6 @@ const handleRequest = async () => {
     }
   };
   const response = await axios.get(ENDPOINT, config)
-/*   let id=0
-  data.forEach(element => {
-      element["id"]=id
-      id++
-      element["kpi"]=element["rajoreal"]>element["esperadokpi"]
-  }); */
   return response.data;
 }
 
