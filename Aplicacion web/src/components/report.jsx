@@ -2,8 +2,10 @@ import React,{ useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import ThreeDots from "./common/ThreeDots";
 import TopBar from './common/topBar'
 import axios from 'axios';
+import { useRouter } from "next/navigation"
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 
@@ -41,10 +43,11 @@ function Report() {
       ];
       
     const [rows,setRows] = useState([])
-
+    const router=useRouter();
     const [type,setType] =useState('diary');
     const [selectedDate, setSelectedDate] = useState(new Date());
     let params = {}
+    let token = localStorage.getItem('token');
 
     const obtenerFechaFormateada = fecha => {
         const options = { year: 'numeric' , month: '2-digit', day: '2-digit'};
@@ -118,44 +121,69 @@ function Report() {
         await handleReports(params).then(rowData=>setRows(rowData))
     }
 
+    const validToken =( async ()=>{
+        token = localStorage.getItem('token');
+        console.log(token)
+        if(token === null){
+            router.push('/auth/login');
+        } 
+        try {
+            await handleReports().then(rowData=>setRows(rowData))
+        } catch (error) {
+            localStorage.removeItem('token');
+            router.push('/auth/login');
+        }
+    })
+
     useEffect(()=>{
-        handleReports().then(rowData=>setRows(rowData))
+        validToken()
     },[])
 
     return (
         <div className='flex flex-col h-screen w-full dark:bg-black'>
-            <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
-                <TopBar message="Reportes"/>
-            </div>
-            <div className='flex flex-col m-2 sm:mx-6 sm:my-4'>
-                <div className='flex flex-col md:flex-row sm:self-center mb-4 mt-2 sm:mt-4 sm:mb-6 items-center'>
-                    <div className='flex flex-col sm:flex-row '>
-                        <label className='flex mb-4 sm:mb-0'>
-                            <span className='block font-medium mx-2 text-black dark:text-white'>Tipo de reporte</span>
-                            <select name='reportType' value={type} onChange={handleTypeChange} className='w-36'>
-                                <option value="diary">Diario</option>
-                                <option value="weeklyIso">Semana ISO</option>
-                                <option value="weekly">Semana móvil</option>
-                                <option value="monthly">Mensual</option>
-                                <option value="annual">Anual</option>
-                            </select>
-                        </label>
-                        <label className="flex md:mx-2 lg:mx-10">
-                            <span className='dark:text-white mx-2'>Filtro por fecha</span>
-                            <DatePicker selected={selectedDate}
-                                onChange={handleDateChange}
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText="Fecha inicio"
-                                className='w-36'/>
-                        </label>
+            {
+                token ?
+                (
+                <div>
+                    <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+                        <TopBar message="Reportes"/>
                     </div>
-                    <button className='button flex' onClick={findReport}>Buscar</button>
-                    <button className='button flex'>ExportarCSV</button>
+                    <div className='flex flex-col m-2 sm:mx-6 sm:my-4'>
+                        <div className='flex flex-col md:flex-row sm:self-center mb-4 mt-2 sm:mt-4 sm:mb-6 items-center'>
+                            <div className='flex flex-col sm:flex-row '>
+                                <label className='flex mb-4 sm:mb-0'>
+                                    <span className='block font-medium mx-2 text-black dark:text-white'>Tipo de reporte</span>
+                                    <select name='reportType' value={type} onChange={handleTypeChange} className='w-36'>
+                                        <option value="diary">Diario</option>
+                                        <option value="weeklyIso">Semana ISO</option>
+                                        <option value="weekly">Semana móvil</option>
+                                        <option value="monthly">Mensual</option>
+                                        <option value="annual">Anual</option>
+                                    </select>
+                                </label>
+                                <label className="flex md:mx-2 lg:mx-10">
+                                    <span className='dark:text-white mx-2'>Filtro por fecha</span>
+                                    <DatePicker selected={selectedDate}
+                                        onChange={handleDateChange}
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="Fecha inicio"
+                                        className='w-36'/>
+                                </label>
+                            </div>
+                            <button className='button flex' onClick={findReport}>Buscar</button>
+                            <button className='button flex'>ExportarCSV</button>
+                        </div>
+                        <div className='flex lg:mx-auto dark:bg-gray-400'>
+                            <DataGrid className='flex' columns={columns} rows={rows} />
+                        </div>
+                    </div>
                 </div>
-                <div className='flex lg:mx-auto dark:bg-gray-400'>
-                    <DataGrid className='flex' columns={columns} rows={rows} />
-                </div>
-            </div>
+            ) : (
+                    <div className="container grid mx-auto min-h-screen items-center place-items-center">
+                        <ThreeDots/>
+                    </div> 
+                )
+            }
         </div>
     )
 }

@@ -1,7 +1,9 @@
 import * as React from 'react';
 import TopBar from './common/topBar';
 import axios from 'axios';
+import { useRouter } from "next/navigation"
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
+import ThreeDots from "./common/ThreeDots";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -31,7 +33,9 @@ function Users() {
   const [rows, setRows] = React.useState([]);
   const [rowSelect,setRowSelect]= React.useState(null);
   const apiRef = useGridApiRef();
+  const router=useRouter();
   let changes = [];
+  let token = localStorage.getItem('token');
 
   const columns = [
     { field: 'nombre', headerName: 'First Name', width: 250 ,editable: true},
@@ -76,26 +80,51 @@ function Users() {
     changes.push(params.row.correo)
   }
 
+  const validToken =( async ()=>{
+    token = localStorage.getItem('token');
+    console.log(token)
+    if(token === null){
+        router.push('/auth/login');
+    } 
+    try {
+        await handleUsers().then(rowData=>setRows(rowData))
+    } catch (error) {
+        localStorage.removeItem('token');
+        router.push('/auth/login');
+    }
+})
+
   React.useEffect(()=>{
-    handleUsers().then(rowData=>setRows(rowData))
+    validToken()
   },[])
 
   return (
     <div className='flex flex-col h-screen w-full dark:bg-black'>
-        <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
-          <TopBar message='Usuarios'/>
-        </div>
-        <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
-          <div className="flex w-full dark:bg-gray-400 ">
-            <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
+      {
+        token ?
+        (
+          <div>
+            <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+                <TopBar message='Usuarios'/>
+            </div>
+            <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
+              <div className="flex w-full dark:bg-gray-400 ">
+                <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
+              </div>
+              <div className='flex self-center'>
+                  <button className='button' onClick={handleConfirmButton}>Guardar</button>
+                  <button className='button' onClick={handleCancelButton}>Cancelar</button>
+                  <button className='button' onClick={blockUser}>Bloquear</button>
+                  <button className='button' onClick={unBlockUser}>Desbloquear</button>
+              </div>
+            </div>
           </div>
-          <div className='flex self-center'>
-              <button className='button' onClick={handleConfirmButton}>Guardar</button>
-              <button className='button' onClick={handleCancelButton}>Cancelar</button>
-              <button className='button' onClick={blockUser}>Bloquear</button>
-              <button className='button' onClick={unBlockUser}>Desbloquear</button>
-          </div>
-        </div>
+        ) : (
+          <div className="container grid mx-auto min-h-screen items-center place-items-center">
+              <ThreeDots/>
+          </div> 
+       )
+      }    
     </div>
   )
 }

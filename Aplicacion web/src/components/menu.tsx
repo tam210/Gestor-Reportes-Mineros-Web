@@ -7,29 +7,22 @@ import TopBar from "./common/topBar";
 
 function Menu() {
     const router=useRouter();
-    let token ='algo';
-    const token1={'rol':'admin'}
+    let token = localStorage.getItem('token');
     
     const toReports = () => {
         router.push('/reports');
     }
 
     const toUsers = () => {
-        if(token1.rol === 'admin'){
-            router.push('/admin/users');
-        };
+        router.push('/admin/users');
     }
 
     const toRequest = () => {
-        if(token1.rol === 'admin'){
-            router.push('/admin/request');
-        };
+        router.push('/admin/request');
     }
 
     const toFC = () => {
-        if(token1.rol==='admin'){
-            router.push('/admin/fc');
-        };
+        router.push('/admin/fc');
     }
 
     const logout = () => {
@@ -39,11 +32,9 @@ function Menu() {
 
     useEffect(()=>{
         token = localStorage.getItem('token');
-        /* if(token === null){
-            router.push('/');
+        if(token === null){
+            router.push('/auth/login');
         } 
-        
-        */
     },[])
 
     return (
