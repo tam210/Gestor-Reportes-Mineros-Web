@@ -20,17 +20,10 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.replace('Bearer ', '');
     const decoded = this.jwtService.decode(token);
-    console.log(token);
-    console.log("---");
-    console.log(decoded);
-    console.log("---");
-    console.log(decoded['tipousuario']);
-    if(decoded['tipousuario'] == 0){
-      console.log("Tiene payload");
-    }
+
     // Verifica que el token sea válido y que tenga el tipo de usuario en el payload
     if (!decoded || !decoded.hasOwnProperty('tipousuario')) {
-      console.log("NOP!!!!!!!!!!!!!!!!!!!!!!");
+      console.log("El payload no es válido (no existe tipousuario)");
       return false;
     }
 
