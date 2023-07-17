@@ -27,6 +27,15 @@ export class Viaje extends Model<Viaje>{
     @ForeignKey(() => Camion)
     @Column({
         allowNull: false,
+        field: 'idfecha',
+        type: DataType.DATE
+    })
+    idfecha: Date;
+
+
+    @ForeignKey(() => Camion)
+    @Column({
+        allowNull: false,
         field: 'idcamion',
         type: DataType.INTEGER
     })

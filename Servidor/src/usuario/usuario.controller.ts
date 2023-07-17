@@ -34,7 +34,7 @@ export class UsuarioController {
   @UseGuards(RolesGuard)
   findAll() {
     console.log(1);
-
+    
     return this.usuarioService.findAll();
   }
 
