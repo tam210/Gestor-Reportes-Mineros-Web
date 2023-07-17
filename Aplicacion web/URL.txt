@@ -3,3 +3,13 @@ Reow definition
 
 https://www.appsloveworld.com/reactjs/100/38/passing-an-image-in-material-ui-data-grid-table
 Image to datagrid
+
+https://www.javascripttutorial.net/javascript-dom/javascript-toggle-password-visibility/
+password toggle hide
+
+https://www.youtube.com/watch?v=kUpoxmSo82E
+video password toggle hide
+
+https://www.youtube.com/watch?v=p7f4RM2wYmc
+video password toggle
+
