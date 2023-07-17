@@ -16,6 +16,7 @@ import sequelize from 'sequelize';
 import { ReporteService } from './reporte/reporte.service';
 import { RolesGuard } from './roles/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { FechaModule } from './fecha/fecha.module';
 
 
 @Module({
@@ -38,7 +39,8 @@ import { APP_GUARD } from '@nestjs/core';
     AuthModule,
     SolicitudModule,
     ReporteModule,
-    SequelizeModule.forFeature([Reporte])
+    SequelizeModule.forFeature([Reporte]),
+    FechaModule
   ],
   controllers: [AppController],
   providers: [AppService,
