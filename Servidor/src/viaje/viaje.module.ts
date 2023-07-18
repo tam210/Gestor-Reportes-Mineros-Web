@@ -14,7 +14,6 @@ import { Flota } from 'src/flota/entities/flota.entity';
 
 @Module({
   imports: [SequelizeModule.forFeature([Viaje, Camion, Zona, Fecha, Origen, Carguio, Flota]),
-    
             ],
   controllers: [ViajeController],
   providers: [ViajeService],
