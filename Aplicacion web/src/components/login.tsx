@@ -88,7 +88,7 @@ function Login() {
               </label>
               <label className='block'>
                 <span className='block text-sm font-medium text-black dark:text-white'>Contraseña</span>
-                <input type="password" id='password' value={password} onChange={handlePasswordChange} placeholder='Ingrese su contraseña'
+                <input type="password" id='password' onChange={handlePasswordChange} placeholder='Ingrese su contraseña'
                 className='loginInput'/>
                 {!validPassword && <p className='error-message mt-2 text-red-600 text-sm'>La contraseña es incorrecta</p>}
               </label>

@@ -31,7 +31,8 @@ const sendUpdate = async (user) => {
 
 function Users() {
   const [rows, setRows] = React.useState([]);
-  const [rowSelect,setRowSelect]= React.useState(null);
+  const [rowSelect,setRowSelect]= React.useState(null); 
+  const [validUser,setValidUser]= useState(true);
   const apiRef = useGridApiRef();
   const router=useRouter();
   let changes = [];
@@ -58,13 +59,17 @@ function Users() {
   }
 
   const blockUser = async ()=>{
-    await sendUpdate({"id":rowSelect.id,"estadoText":"Bloqueado"})
-    handleUsers().then(rowData=>setRows(rowData))
+    if(rowSelect!==null){
+      await sendUpdate({"id":rowSelect.id,"estadoText":"Bloqueado"})
+      handleUsers().then(rowData=>setRows(rowData))
+    }
   }
 
   const unBlockUser = async ()=>{
-    await sendUpdate({"id":rowSelect.id,"estadoText":"Aprobado"})
-    handleUsers().then(rowData=>setRows(rowData))
+    if(rowSelect!==null){
+      await sendUpdate({"id":rowSelect.id,"estadoText":"Aprobado"})
+      handleUsers().then(rowData=>setRows(rowData))
+    }
   }
 
   const changeRowSelect = (event)=>{
@@ -82,7 +87,6 @@ function Users() {
 
   const validToken =( async ()=>{
     token = localStorage.getItem('token');
-    console.log(token)
     if(token === null){
         router.push('/auth/login');
     } 
@@ -90,7 +94,7 @@ function Users() {
         await handleUsers().then(rowData=>setRows(rowData))
     } catch (error) {
         localStorage.removeItem('token');
-        router.push('/auth/login');
+        setValidUser(false)
     }
 })
 

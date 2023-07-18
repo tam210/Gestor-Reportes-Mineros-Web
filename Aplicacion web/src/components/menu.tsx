@@ -2,12 +2,23 @@
 import { useRouter } from "next/navigation"
 import DarkModeButton from '@/components/common/darkModeButton';
 import ThreeDots from "./common/ThreeDots";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import TopBar from "./common/topBar";
+import axios from "axios";
+
+const validate = async ()=>{
+    const ENDPOINT=''
+    const body = {
+        'token':localStorage.getItem('token')
+    }
+    const response = axios
+    
+}
 
 function Menu() {
     const router=useRouter();
     let token = localStorage.getItem('token');
+    const [validUser,setValidUser]= useState(true);
     
     const toReports = () => {
         router.push('/reports');
@@ -30,11 +41,16 @@ function Menu() {
         router.push('/')
     }
 
-    useEffect(()=>{
+    const validToken = async()=>{
         token = localStorage.getItem('token');
         if(token === null){
             router.push('/auth/login');
         } 
+        
+    }
+
+    useEffect(()=>{
+        
     },[])
 
     return (

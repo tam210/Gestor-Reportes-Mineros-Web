@@ -37,11 +37,28 @@ export class SolicitudService {
   }
 
 
-  async findAll(): Promise<Solicitud[]> {
+  async findAll(){
     console.log("Entrandoo a función")
-    return this.solicitudModel.findAll({
+    let solicitudes = await this.solicitudModel.findAll({
       include: [Usuario], // Incluir la entidad Usuario
     });
+
+    solicitudes = solicitudes.filter(solicitud=>{
+      const usuario = solicitud.usuario
+      return usuario.estado ===1
+    })
+
+    return solicitudes.map(solicitud=>{
+      const usuario = solicitud.usuario
+      const tipousuario = usuario.tipousuario === 0 ? 'Administrador' : 'Usuario'
+      return{
+        ...solicitud.toJSON(),
+        usuario:{
+          ...usuario.toJSON(),
+          tipousuario:tipousuario
+        }
+      }
+    })
   }
 
   findOne(id: number) {
