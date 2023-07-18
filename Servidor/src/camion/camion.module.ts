@@ -7,6 +7,8 @@ import { Camion } from './entities/camion.entity';
 @Module({
   imports: [SequelizeModule.forFeature([Camion])],
   controllers: [CamionController],
-  providers: [CamionService]
+  providers: [CamionService],
+  exports: [CamionService]
+    
 })
 export class CamionModule {}

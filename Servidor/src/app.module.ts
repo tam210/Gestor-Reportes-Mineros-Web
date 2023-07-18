@@ -17,6 +17,14 @@ import { ReporteService } from './reporte/reporte.service';
 import { RolesGuard } from './roles/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { FechaModule } from './fecha/fecha.module';
+import { ViajeModule } from './viaje/viaje.module';
+import { Viaje } from './viaje/entities/viaje.entity';
+import { Carguio } from './carguio/entities/carguio.entity';
+import { Destino } from './destino/entities/destino.entity';
+import { Rajo } from './rajo/entities/rajo.entity';
+import { CamionModule } from './camion/camion.module';
+import { Camion } from './camion/entities/camion.entity';
+import { Flota } from './flota/entities/flota.entity';
 
 
 @Module({
@@ -33,14 +41,17 @@ import { FechaModule } from './fecha/fecha.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Usuario, Solicitud, Reporte]
+      models: [Usuario, Solicitud, Reporte, Viaje, Carguio, Destino, Rajo, Camion, Flota]
     }),
     UsuarioModule,
     AuthModule,
     SolicitudModule,
     ReporteModule,
     SequelizeModule.forFeature([Reporte]),
-    FechaModule
+    FechaModule,
+    ViajeModule,
+    CamionModule
+    
   ],
   controllers: [AppController],
   providers: [AppService,
