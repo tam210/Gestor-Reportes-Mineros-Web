@@ -1,24 +1,21 @@
 import DarkModeButton from '@/components/common/darkModeButton';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const isAdmin = async () =>{
-  const ENDPOINT = 'http://localhost:3001/usuario/token';
-  const config = { 
-    headers:{
-      Authorization: 'Bearer '+localStorage.getItem('token')
-    }
-  };
-  const body ={
-    'token':localStorage.getItem('token')
+const validate = async ()=>{
+  const ENDPOINT='http://localhost:3001/auth/rol'
+  const body = {
+      'token':localStorage.getItem('token')
   }
-  const response = await axios.patch(ENDPOINT, request , token);
-  return response.data
+  const response = await axios.post(ENDPOINT,body)
+  console.log(response.data.tipo_usuario)
+  return response.data.tipo_usuario ==="Administrador"
 }
 
 function TopBar(props) {
   const router = useRouter();
-  const admin = true;
+  const [admin,setAdmin] = useState(false);
   const logOut=()=>{
     localStorage.removeItem('token');
     router.push('/auth/login');
@@ -26,8 +23,15 @@ function TopBar(props) {
   const menu = ()=>{
     router.push('/admin/menu')
   }
+  const validAdmin = async ()=>{
+    const valid = await validate()
+    setAdmin(valid)
+  }
+  useEffect(()=>{
+    validAdmin()
+  },[])
   return (
-    <div className='bg-black dark:bg-gray-500 w-full h-auto mb-auto'>
+    <div className='bg-black dark:bg-gray-500 w-full h-full'>
         <div className='grid grid-cols-2'>
             <div className='flex px-4'>
                 <p className='text-white place-self-center'>{props.message}</p>

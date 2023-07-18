@@ -18,7 +18,7 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
-  @Get('rol')
+  @Post('rol')
   rol(@Body() rolDto: RolDto){
     return this.authService.obtenerRol(rolDto);
   }

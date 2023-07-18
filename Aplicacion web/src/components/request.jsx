@@ -97,28 +97,28 @@ function Request() {
     <div className='flex flex-col h-screen w-full dark:bg-black'>
       {
         validUser ? (
-          <div>
+          <div className='dark:bg-black'>
             {
-        token ?
-        (
-          <div>
-            <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
-              <TopBar message="Solicitudes de acceso"/>
-            </div>
-            <div className='flex relative flex-col m-4 sm:m-6'>
-              <DataGrid className='dark:bg-gray-400 mb-2 lg:mx-auto' columns={columns} rows={rows} onRowClick={changeRowSelect} getRowId={(row)=>row.id}/>
-              <div className='flex flex-row self-center'>
-                  <button className='button' onClick={approve}>Permitir</button>
-                  <button className='button' onClick={deny}>Denegar</button>
-              </div>
-            </div>
-          </div>
-          ) : (
-            <div className="container grid mx-auto min-h-screen items-center place-items-center">
-                <ThreeDots/>
-            </div> 
-        )
-      }
+              token ?
+              (
+                <div className='dark:bg-black'>
+                  <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+                    <TopBar message="Solicitudes de acceso"/>
+                  </div>
+                  <div className='flex relative flex-col m-4 sm:m-6'>
+                    <DataGrid className='dark:bg-gray-400 mb-2 lg:mx-auto' columns={columns} rows={rows} onRowClick={changeRowSelect} getRowId={(row)=>row.id}/>
+                    <div className='flex flex-row self-center'>
+                        <button className='button' onClick={approve}>Permitir</button>
+                        <button className='button' onClick={deny}>Denegar</button>
+                    </div>
+                  </div>
+                </div>
+                ) : (
+                  <div className="container grid mx-auto min-h-screen items-center place-items-center">
+                      <ThreeDots/>
+                  </div> 
+              )
+            }
           </div>
         ):(<ExpireSession/>)
       }

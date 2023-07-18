@@ -6,6 +6,7 @@ import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import ThreeDots from "./common/ThreeDots";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import ExpireSession from './common/expireSession';
 
 const handleUsers = async () => {
   const ENDPOINT = 'http://localhost:3001/usuario';
@@ -32,7 +33,7 @@ const sendUpdate = async (user) => {
 function Users() {
   const [rows, setRows] = React.useState([]);
   const [rowSelect,setRowSelect]= React.useState(null); 
-  const [validUser,setValidUser]= useState(true);
+  const [validUser,setValidUser]= React.useState(true);
   const apiRef = useGridApiRef();
   const router=useRouter();
   let changes = [];
@@ -105,29 +106,36 @@ function Users() {
   return (
     <div className='flex flex-col h-screen w-full dark:bg-black'>
       {
-        token ?
+        validUser ? 
         (
-          <div>
-            <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
-                <TopBar message='Usuarios'/>
-            </div>
-            <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
-              <div className="flex w-full dark:bg-gray-400 ">
-                <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
-              </div>
-              <div className='flex self-center'>
-                  <button className='button' onClick={handleConfirmButton}>Guardar</button>
-                  <button className='button' onClick={handleCancelButton}>Cancelar</button>
-                  <button className='button' onClick={blockUser}>Bloquear</button>
-                  <button className='button' onClick={unBlockUser}>Desbloquear</button>
-              </div>
-            </div>
+          <div className='dark:bg-black'>
+            {
+              token ?
+              (
+                <div className='dark:bg-black'>
+                  <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
+                      <TopBar message='Usuarios'/>
+                  </div>
+                  <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
+                    <div className="flex w-full dark:bg-gray-400 ">
+                      <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
+                    </div>
+                    <div className='flex self-center'>
+                        <button className='button' onClick={handleConfirmButton}>Guardar</button>
+                        <button className='button' onClick={handleCancelButton}>Cancelar</button>
+                        <button className='button' onClick={blockUser}>Bloquear</button>
+                        <button className='button' onClick={unBlockUser}>Desbloquear</button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="container grid mx-auto min-h-screen items-center place-items-center">
+                    <ThreeDots/>
+                </div> 
+            )
+            }
           </div>
-        ) : (
-          <div className="container grid mx-auto min-h-screen items-center place-items-center">
-              <ThreeDots/>
-          </div> 
-       )
+        ):(<ExpireSession/>)
       }    
     </div>
   )

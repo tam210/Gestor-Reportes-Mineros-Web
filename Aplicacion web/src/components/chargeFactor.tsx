@@ -40,13 +40,13 @@ function ChargeFactor() {
     })
     
   return (
-    <div className='flex flex-col h-screen w-full items-center dark:bg-black'>
+    <div className='flex flex-col h-screen w-full dark:bg-black'>
         {validUser ? 
         (
-            <div>
+            <div className='dark:bg-black'>
                 {token ? 
                 (
-                    <div>
+                    <div className='dark:bg-black'>
                         <div className="z-10 w-full max-w-screen-3xl items-center justify-between font-mono text-sm lg:flex">
                             <TopBar message="Factor de carga"/>
                         </div>  
@@ -54,7 +54,7 @@ function ChargeFactor() {
                             <div className='max-w-[200px] sm:max-w-[300px] self-center'>
                                 <img className='w-full h-auto dark:invert' src="/images/camion.png"/>
                             </div>
-                            <div className='flex dark:text-white flex-col sm:flex-row'>
+                            <div className='flex dark:text-white flex-col place-content-center sm:flex-row'>
                                 <div className='sm:mx-4'>
                                     <label className="flex my-3">
                                         <span>Flota:</span>
