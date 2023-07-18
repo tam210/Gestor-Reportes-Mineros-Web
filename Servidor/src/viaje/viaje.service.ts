@@ -8,18 +8,25 @@ import { Fecha } from '../fecha/entities/fecha.entity';
 import { Op, Sequelize } from 'sequelize';
 import sequelize from 'sequelize';
 import { Zona } from 'src/zona/entities/zona.entity';
+import { Origen } from 'src/origen/entities/origen.entity';
+import { Flota } from 'src/flota/entities/flota.entity';
 
 
 
 @Injectable()
 export class ViajeService {
+
   constructor(
     @InjectModel(Viaje)
     private viajeModel: typeof Viaje,
+    @InjectModel(Origen)
+    private origenModel: typeof Origen,
     @InjectModel(Camion)
     private camionModel: typeof Camion,
     @InjectModel(Zona)
-    private zonaModel: typeof Zona,
+    private zonaModel: typeof Zona,    
+    @InjectModel(Flota)
+    private flotaModel: typeof Flota,
     @InjectModel(Fecha)
     private fechaModel: typeof Fecha,  // inyectamos el modelo Fecha
   ) {}
@@ -53,12 +60,84 @@ export class ViajeService {
 
 
 
+
+  async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
+    const fechaInicio = updateViajeDto.fechaInicio;
+    const fechaFin = updateViajeDto.fechaFin;
+    const idZona = updateViajeDto.idzona;
+    const idFlota = updateViajeDto.idflota;
   
-    // ... (resto del código)
+    console.log("entrando...");
   
-    async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
+    const t = await this.viajeModel.sequelize.transaction();
+    try {
+      // Encontrar los IDs de viajes que coincidan con las fechas, zona y flota
+      const viajesToUpdate = await this.viajeModel.findAll({
+        include: [
+          {
+            model: this.origenModel,
+            include: [{
+              model: this.zonaModel,
+              where: {
+                idzona: idZona
+              }
+            }],
+          },
+          {
+            model: this.fechaModel,
+            where: {
+              fecha: {
+                [Op.between]: [fechaInicio, fechaFin]
+              },
+            },
+          },
+          {
+            model: this.camionModel,
+            include: [{
+              model: this.flotaModel,
+              where: {
+                idflota: idFlota
+              }
+            }],
+          }
+        ],
+        transaction: t,
+      });
+  
+      if (viajesToUpdate.length === 0) {
+        throw new NotFoundException('No se encontraron viajes con los filtros especificados.');
+      }
+  
+      const idsViajes = viajesToUpdate.map((viaje) => viaje.getDataValue('idviaje'));
+      console.log("---------VIAJES---------");
+      console.log(idsViajes);
+      // Actualizar el tonelaje de los viajes encontrados
+      await this.viajeModel.update(
+        {
+          tonelaje: updateViajeDto.tonelaje,
+        },
+        {
+          where: {
+            idviaje: idsViajes,
+          },
+          transaction: t,
+        },
+      );
+  
+      await t.commit();
+      return { message: 'Tonelaje actualizado exitosamente.' };
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
+  }
+  
+  
+
+    async updateLoadFactor_ofiicial(updateViajeDto: UpdateViajeDto) {
       const fechaInicio = updateViajeDto.fechaInicio;
       const fechaFin = updateViajeDto.fechaFin;
+      
       const origen = updateViajeDto.idorigen;
       const idFlota = updateViajeDto.idflota;
       const idZona = updateViajeDto.idzona;
@@ -92,7 +171,7 @@ export class ViajeService {
           },
           transaction: t,
         });
-          
+
         if (fechas.length === 0) {
           throw new NotFoundException('No se encontraron fechas en el rango especificado.');
         }
