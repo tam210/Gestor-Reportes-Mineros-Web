@@ -13,6 +13,7 @@ export class SolicitudController {
   @Roles(RolUsuario.Administrador)
   @UseGuards(RolesGuard)
   findAll() {
+    console.log("----------");
     return this.solicitudService.findAll();
   }
 

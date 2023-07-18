@@ -4,6 +4,7 @@ import { UpdateSolicitudDto } from './dto/update-solicitud.dto';
 import { Solicitud } from './entities/solicitud.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
+import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Injectable()
 export class SolicitudService {
@@ -36,8 +37,11 @@ export class SolicitudService {
   }
 
 
-  async findAll() {
-    return this.solicitudModel.findAll();
+  async findAll(): Promise<Solicitud[]> {
+    console.log("Entrandoo a función")
+    return this.solicitudModel.findAll({
+      include: [Usuario], // Incluir la entidad Usuario
+    });
   }
 
   findOne(id: number) {
