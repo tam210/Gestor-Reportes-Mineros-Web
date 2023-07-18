@@ -22,9 +22,9 @@ export class ViajeController {
     return this.viajeService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateViajeDto: UpdateViajeDto) {
-    return this.viajeService.update(+id, updateViajeDto);
+  @Patch()
+  update(@Body() updateViajeDto: UpdateViajeDto) {
+    return this.viajeService.updateLoadFactor(updateViajeDto);
   }
 
   @Delete(':id')

@@ -13,10 +13,9 @@ import { Sequelize } from 'sequelize';
 export class ViajeService {
   constructor(
     @InjectModel(Viaje)
-    private readonly viajeModel: typeof Viaje,
+    private viajeModel: typeof Viaje,
     @InjectModel(Camion)
-    private readonly camionModel: typeof Camion,
-    private sequelize: Sequelize,
+    private camionModel: typeof Camion,
   ) {}
 
 
@@ -29,8 +28,14 @@ export class ViajeService {
     return `This action returns all viaje`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} viaje`;
+  async findOne(id: number) {
+    console.log('Encontrar por id')
+    const viaje = await this.viajeModel.findOne({
+      where: {
+        id: id
+      }
+    });
+    return viaje;
   }
 
   update(id: number, updateViajeDto: UpdateViajeDto) {
@@ -41,14 +46,19 @@ export class ViajeService {
     return `This action removes a #${id} viaje`;
   }
 
-  async updateLoadFactor(fecha: string, origen: string, idFlota: number, updateViajeDto: UpdateViajeDto) {
-    const t = await this.sequelize.transaction();
+  async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
+    const fecha = updateViajeDto.fecha;
+    const origen = updateViajeDto.idorigen;
+    const idFlota = updateViajeDto.idflota;
+    console.log("entrando...");
+    //const tonelaje = updateViajeDto.tonelaje;
+    const t = await this.viajeModel.sequelize.transaction();
     try {
       // Encontrar los IDs de camiones en la flota especificada
       const camionesEnFlota = await this.camionModel.findAll({
         attributes: ['idcamion'],
         where: {
-          flota: idFlota,
+          idflota: idFlota,
         },
         transaction: t,
       });
@@ -63,7 +73,7 @@ export class ViajeService {
       const viajesEnCamiones = await this.viajeModel.findAll({
         attributes: ['idviaje'],
         where: {
-          idfecha: fecha,
+          //idfecha: fecha,
           idorigen: origen,
           idcamion: idsCamiones,
         },
