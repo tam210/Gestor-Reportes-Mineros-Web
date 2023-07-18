@@ -8,7 +8,8 @@ import axios from 'axios';
 import { useRouter } from "next/navigation"
 import { startOfWeek, endOfWeek } from 'date-fns';
 import ExpireSession from './common/expireSession';
-
+import clsx from 'clsx';
+import Box from '@mui/material/Box';
 
 const handleReports = async (params) => {
     const ENDPOINT = 'http://localhost:3001/reporte/';
@@ -24,11 +25,7 @@ const handleReports = async (params) => {
     data.forEach(element => {
         element["id"]=id
         id++
-        if(element["rajoreal"]<element["esperadokpi"]){
-            element["kpi"]="/images/Señales/pngwing.com (3).png"
-        }else{
-            element["kpi"]="/images/Señales/pngwing.com (4).png"
-        }
+        element["kpi"]=parseInt(parseInt(element["rajoreal"])/parseInt(element["esperadokpi"])*100)
         
     });
     return response.data;
@@ -40,7 +37,8 @@ function Report() {
         { field: 'fecha', headerName: 'Fecha', minWidth: 200 },
         { field: 'rajoreal', headerName: 'Tonelaje real', minWidth: 200 },
         { field: 'esperadokpi', headerName: 'Tonelaje esperado', minWidth: 200 },
-        { field: 'kpi', headerName: 'KPI', renderCell: (params)=> <img src={params.value} /> ,width:60}
+        { field: 'kpi', headerName: 'KPI(%)',cellClassName: (params)=>{console.log(params.value) 
+            return clsx('super-app',{ positive: params.value <100, negative: params.value >=100,})},width:80}
       ];
       
     const [rows,setRows] = useState([])
@@ -178,7 +176,29 @@ function Report() {
                                 <button className='button flex'>ExportarCSV</button>
                             </div>
                             <div className='flex lg:mx-auto dark:bg-gray-400'>
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                    '& .super-app-theme--cell': {
+                                    backgroundColor: 'rgba(224, 183, 60, 0.55)',
+                                    color: '#1a3e72',
+                                    fontWeight: '600',
+                                    },
+                                    '& .super-app.negative': {
+                                    backgroundColor: 'rgba(157, 255, 118, 0.49)',
+                                    color: '#1a3e72',
+                                    fontWeight: '600',
+                                    },
+                                    '& .super-app.positive': {
+                                    backgroundColor: '#d47483',
+                                    color: '#1a3e72',
+                                    fontWeight: '600',
+                                    },
+                                }}
+                                >
                                 <DataGrid className='flex' columns={columns} rows={rows} />
+                                </Box>
+                                
                             </div>
                         </div>
                     </div>

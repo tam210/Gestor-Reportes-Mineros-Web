@@ -44,7 +44,7 @@ function Users() {
     { field: 'apellido', headerName: 'Last Name', width: 250 ,editable: true},
     { field: 'correo', headerName: 'Correo',type: 'email', width: 250 },
     { field: 'tipousuario', headerName: 'Tipo de usuario', width: 250 },
-    { field: 'estado', headerName: 'Estado', width: 250 },
+    { field: 'estado', headerName: 'Estado', width: 200 },
   ];
 
   const handleConfirmButton = async ()=>{
@@ -117,8 +117,8 @@ function Users() {
                       <TopBar message='Usuarios'/>
                   </div>
                   <div className='flex flex-col mx-2 my-2 sm:mx-6 sm:my-4'>
-                    <div className="flex w-full dark:bg-gray-400 ">
-                      <DataGrid rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
+                    <div className="flex dark:bg-gray-400 lg:mx-auto">
+                      <DataGrid className='flex' rows={rows} columns={columns} apiRef={apiRef} onRowClick={changeRowSelect} onCellEditStop={updateRow}/>
                     </div>
                     <div className='flex self-center'>
                         <button className='button' onClick={handleConfirmButton}>Guardar</button>
