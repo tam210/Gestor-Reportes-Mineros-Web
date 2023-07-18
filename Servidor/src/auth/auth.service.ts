@@ -69,11 +69,13 @@ export class AuthService {
         // Verifica que el token sea válido y que tenga el tipo de usuario en el payload
         if (!decoded || !decoded.hasOwnProperty('tipousuario')) {
         console.log("El payload no es válido (no existe tipousuarioo)");
-            return false;
+            return {
+                tipoUsuario: "Rol no válido (error con payload)"
+            };
         }
 
         const tipoUsuario = decoded['tipousuario'];
-        let tipoUsuarioString = "Rol no válido";
+        let tipoUsuarioString = "";
         if (tipoUsuario==0){
             tipoUsuarioString = "Administrador";
         }else if(tipoUsuario==1){
