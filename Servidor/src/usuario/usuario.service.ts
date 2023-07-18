@@ -70,9 +70,9 @@ export class UsuarioService {
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    if(decision==EstadoUsuario.Aprobado){
+    if(decision==1){ //aprobado = 1, rechazado = 0
       usuario.estado = EstadoUsuario.Aprobado;
-    }else if (decision==EstadoUsuario.Rechazado){
+    }else if (decision==0){
       usuario.estado = EstadoUsuario.Rechazado;      
     }else{
       throw new NotFoundException('Estado no existente');
