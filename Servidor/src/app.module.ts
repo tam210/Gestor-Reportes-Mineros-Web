@@ -29,6 +29,7 @@ import { Fecha } from './fecha/entities/fecha.entity';
 import { FlotaModule } from './flota/flota.module';
 import { ZonaModule } from './zona/zona.module';
 import { Zona } from './zona/entities/zona.entity';
+import { Origen } from './origen/entities/origen.entity';
 
 
 @Module({
@@ -45,7 +46,7 @@ import { Zona } from './zona/entities/zona.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Usuario, Solicitud, Reporte, Viaje, Carguio, Destino, Rajo, Camion, Flota, Fecha, Zona]
+      models: [Usuario, Solicitud, Reporte, Viaje, Carguio, Destino, Rajo, Camion, Flota, Fecha, Zona, Origen]
     }),
     UsuarioModule,
     AuthModule,
