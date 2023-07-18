@@ -517,7 +517,7 @@ def planes(archivo, dataFrame, cursor):
     insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s)".format(tabla, ", ".join(zonas.columns))
 
     cursor.executemany(insert_query, zonas.values.tolist())
-contra = "codigo16"
+contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 archivo = buscarArchivo(cur)
