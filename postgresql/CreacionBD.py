@@ -160,7 +160,7 @@ def creacionViews(cursor):
     ViewRajo = """CREATE VIEW prekpirajo AS
 	SELECT rajonombre, fecha, idfecha, SUM(real) AS rajoreal, SUM(esperado) AS esperadokpi
 	FROM (SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
-			zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+			zona.nombre AS zonanombre, SUM (viaje.tonelaje) as real, kpi.esperado
 		FROM viaje
 			JOIN origen ON viaje.idorigen = origen.idorigen
 			JOIN zona ON origen.idzona = zona.idzona
@@ -176,7 +176,7 @@ def creacionViews(cursor):
 
     ViewZona = """CREATE VIEW prekpizona AS
 	SELECT fecha.fecha, viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, kpi.idzona, 
-		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+		zona.nombre AS zonanombre, SUM (viaje.tonelaje) as real, kpi.esperado
 	FROM viaje
 		JOIN origen ON viaje.idorigen = origen.idorigen
 		JOIN zona ON origen.idzona = zona.idzona
