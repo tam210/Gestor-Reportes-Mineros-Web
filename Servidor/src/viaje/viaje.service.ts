@@ -28,8 +28,14 @@ export class ViajeService {
     return `This action returns all viaje`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} viaje`;
+  async findOne(id: number) {
+    console.log('Encontrar por id')
+    const viaje = await this.viajeModel.findOne({
+      where: {
+        id: id
+      }
+    });
+    return viaje;
   }
 
   update(id: number, updateViajeDto: UpdateViajeDto) {
@@ -52,7 +58,7 @@ export class ViajeService {
       const camionesEnFlota = await this.camionModel.findAll({
         attributes: ['idcamion'],
         where: {
-          flota: idFlota,
+          idflota: idFlota,
         },
         transaction: t,
       });
@@ -67,7 +73,7 @@ export class ViajeService {
       const viajesEnCamiones = await this.viajeModel.findAll({
         attributes: ['idviaje'],
         where: {
-          idfecha: fecha,
+          //idfecha: fecha,
           idorigen: origen,
           idcamion: idsCamiones,
         },
