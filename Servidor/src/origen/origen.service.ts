@@ -17,8 +17,9 @@ export class OrigenService {
     return 'This action adds a new origen';
   }
 
-  findAll() {
-    return `This action returns all origen`;
+  async findAll() {
+    console.log('find all')
+    return await this.origenModel.findAll();
   }
 
   async findOne(id: number) {

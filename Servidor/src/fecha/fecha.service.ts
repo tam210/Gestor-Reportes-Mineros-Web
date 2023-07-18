@@ -17,9 +17,11 @@ export class FechaService {
     return 'This action adds a new fecha';
   }
 
-  findAll() {
-    return `This action returns all fecha`;
+  async findAll() {
+    console.log('find all')
+    return await this.fechaModel.findAll();
   }
+
 
   async findOne(id: number) {
     console.log('Encontrar por id')
