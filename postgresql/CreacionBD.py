@@ -145,10 +145,10 @@ def creacionTablasUsuarios(cursor):
     tabla_solicitudes = """DROP TABLE IF EXISTS solicitud;
     CREATE TABLE solicitud(
         idSolicitud INT NOT NULL,
-        correo text NOT NULL,
+        idUsuario UUID NOT NULL,
         fecha date,
         PRIMARY KEY(idSolicitud),
-        FOREIGN KEY(correo) REFERENCES usuario(correo))"""
+        FOREIGN KEY(idUsuario) REFERENCES usuario(id))"""
     
 
     cursor.execute(y)
