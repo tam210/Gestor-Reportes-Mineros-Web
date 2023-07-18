@@ -59,9 +59,61 @@ export class ViajeService {
   }
 
 
-
-
   async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
+    const fechaInicio = updateViajeDto.fechaInicio;
+    const fechaFin = updateViajeDto.fechaFin;
+    const idZona = updateViajeDto.idzona;
+    const idFlota = updateViajeDto.idflota;
+  
+    console.log("entrando...");
+  
+    const t = await this.viajeModel.sequelize.transaction();
+    try {
+      const viajesToUpdate = await this.viajeModel.findAll({
+        where: {
+          idorigen: {
+            [Op.in]: Sequelize.literal(`(SELECT idorigen FROM origen WHERE idzona = ${idZona})`)
+          },
+          idfecha: {
+            [Op.in]: Sequelize.literal(`(SELECT idfecha FROM fecha WHERE fecha BETWEEN '${fechaInicio}' AND '${fechaFin}')`)
+          },
+          idcamion: {
+            [Op.in]: Sequelize.literal(`(SELECT idcamion FROM camion WHERE idflota IN (SELECT idflota FROM flota WHERE idflota = ${idFlota}))`)
+          },
+        },
+        transaction: t,
+      });
+  
+      if (viajesToUpdate.length === 0) {
+        throw new NotFoundException('No se encontraron viajes con los filtros especificados.');
+      }
+  
+      const idsViajes = viajesToUpdate.map((viaje) => viaje.getDataValue('idviaje'));
+      console.log("---------VIAJES---------");
+      console.log(idsViajes);
+      // Actualizar el tonelaje de los viajes encontrados
+      await this.viajeModel.update(
+        {
+          tonelaje: updateViajeDto.tonelaje,
+        },
+        {
+          where: {
+            idviaje: idsViajes,
+          },
+          transaction: t,
+        },
+      );
+  
+      await t.commit();
+      return { message: 'Tonelaje actualizado exitosamente.' };
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
+  }
+  
+
+  async updateLoadFactor2(updateViajeDto: UpdateViajeDto) {
     const fechaInicio = updateViajeDto.fechaInicio;
     const fechaFin = updateViajeDto.fechaFin;
     const idZona = updateViajeDto.idzona;
@@ -110,7 +162,7 @@ export class ViajeService {
   
       const idsViajes = viajesToUpdate.map((viaje) => viaje.getDataValue('idviaje'));
       console.log("---------VIAJES---------");
-      console.log(idsViajes);
+      console.log(idsViajes.length);
       // Actualizar el tonelaje de los viajes encontrados
       await this.viajeModel.update(
         {
