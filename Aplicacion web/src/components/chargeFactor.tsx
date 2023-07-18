@@ -30,13 +30,14 @@ const handleZona = async ()=>{
 }
 
 const sendRequest = async (request)=>{
-    const ENDPOINT = ''
+    const ENDPOINT = 'http://localhost:3001/viaje'
     const config = {
         headers:{
             Authorization: 'Bearer '+localStorage.getItem('token')
         }
     }
     const response = await axios.patch(ENDPOINT,request,config)
+    console.log(response.data)
     return response.data
 }
 
@@ -98,7 +99,7 @@ function ChargeFactor() {
         setSelectZona(event.target.value)
     }
 
-    const confirm = ()=>{
+    const confirm = async()=>{
         try {
             if(chargeFactor!==''){
                 const request={
@@ -109,7 +110,7 @@ function ChargeFactor() {
                     'tonelaje':chargeFactor
                 }
                 setValidRequest(true)
-                sendRequest(request)
+                await sendRequest(request)
             }else{
                 setValidRequest(false)
             }
@@ -187,7 +188,7 @@ function ChargeFactor() {
                                 </div>
                                 <div className='self-center'>
                                 <button className='button w-36' onClick={confirm}>Confirmar</button>
-                                {!validRequest && <p className='text-red-600'>Completa todos los campos</p>}
+                                {!validRequest && <p className='text-red-600'>Error en los campos ingresados</p>}
                                 </div>
                             </div>
                         </div>
