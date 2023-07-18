@@ -1,18 +1,32 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TopBar from './common/topBar'
 import { useRouter } from 'next/navigation';
 import ThreeDots from './common/ThreeDots';
 import ExpireSession from './common/expireSession';
+import axios from 'axios';
+
+const handleFlota = async ()=>{
+    const ENDPOINT = 'http://localhost:3001/flota'
+    const config = {
+        headers:{
+            Authorization: 'Bearer '+localStorage.getItem('token')
+        }
+    }
+    const response = await axios.get(ENDPOINT,config)
+    return response.data
+}
 
 function ChargeFactor() {
     const [startedDate, setStartedDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [chargeFactor, setChargeFactor] = useState(null);
+    const [flota, setFlota]=useState([])
     const [validUser,setValidUser]= useState(true);
     const router = useRouter()
     let token = localStorage.getItem('token')
+    console.log(token)
     const handleStartChange = (date) => {
         setStartedDate(date);
     };
@@ -28,15 +42,20 @@ function ChargeFactor() {
         
     const validToken =( async ()=>{
         token = localStorage.getItem('token');
+        console.log(token)
         if(token === null){
             router.push('/auth/login');
         } 
         try {
-            
+            await handleFlota().then((row)=>setFlota(row))
         } catch (error) {
             localStorage.removeItem('token');
             setValidUser(false)
         }
+    })
+
+    useEffect(()=>{
+        validToken()
     })
     
   return (
@@ -59,11 +78,11 @@ function ChargeFactor() {
                                     <label className="flex my-3">
                                         <span>Flota:</span>
                                         <select className='mx-3 w-full' name="fleet" id="">
-                                            {/* {options.map((option) => (
+                                            {flota.map((option) => (
                                                 <option key={option.value} value={option.value}>
                                                 {option.label}
                                                 </option>
-                                            ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota */}
+                                            ))} usar el codigo anterior para recibir un arreglo de flotas llamado options y crear una opcion para cada flota
                                         </select>
                                     </label>
                                     <label className="flex my-3">

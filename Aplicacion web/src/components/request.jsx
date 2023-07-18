@@ -39,9 +39,8 @@ const sendRequest = async (row, decision) =>{
     id: row.idusuario,
     decision: decision
   }
-  console.log(request)
-  /* const response = await axios.patch(ENDPOINT, request , token);
-  return response.data; */
+  const response = await axios.patch(ENDPOINT, request , token);
+  return response.data; 
 }
 
 function Request() {
