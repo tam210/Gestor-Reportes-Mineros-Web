@@ -19,6 +19,7 @@ const handleReports = async (params) => {
         Authorization: 'Bearer '+localStorage.getItem('token')
       }
     };
+    console.log(params)
     const response = await axios.get(ENDPOINT, config)
     const data=response.data
     let id=0
@@ -37,7 +38,7 @@ function Report() {
         { field: 'fecha', headerName: 'Fecha', minWidth: 200 },
         { field: 'rajoreal', headerName: 'Tonelaje real', minWidth: 200 },
         { field: 'esperadokpi', headerName: 'Tonelaje esperado', minWidth: 200 },
-        { field: 'kpi', headerName: 'KPI(%)',cellClassName: (params)=>{console.log(params.value) 
+        { field: 'kpi', headerName: 'KPI(%)',cellClassName: (params)=>{ 
             return clsx('super-app',{ positive: params.value <100, negative: params.value >=100,})},width:80}
       ];
       
@@ -66,8 +67,6 @@ function Report() {
         
         let inicio;
         let fin;
-
-        console.log(tipo)
         if(tipo==="monthly"){  
             inicio = new Date(year, month, 1);
             fin = new Date(year, month + 1, 0);

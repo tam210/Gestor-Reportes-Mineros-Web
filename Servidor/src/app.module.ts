@@ -25,6 +25,11 @@ import { Rajo } from './rajo/entities/rajo.entity';
 import { CamionModule } from './camion/camion.module';
 import { Camion } from './camion/entities/camion.entity';
 import { Flota } from './flota/entities/flota.entity';
+import { Fecha } from './fecha/entities/fecha.entity';
+import { FlotaModule } from './flota/flota.module';
+import { ZonaModule } from './zona/zona.module';
+import { Zona } from './zona/entities/zona.entity';
+import { Origen } from './origen/entities/origen.entity';
 
 
 @Module({
@@ -41,7 +46,7 @@ import { Flota } from './flota/entities/flota.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Usuario, Solicitud, Reporte, Viaje, Carguio, Destino, Rajo, Camion, Flota]
+      models: [Usuario, Solicitud, Reporte, Viaje, Carguio, Destino, Rajo, Camion, Flota, Fecha, Zona, Origen]
     }),
     UsuarioModule,
     AuthModule,
@@ -50,7 +55,9 @@ import { Flota } from './flota/entities/flota.entity';
     SequelizeModule.forFeature([Reporte]),
     FechaModule,
     ViajeModule,
-    CamionModule
+    CamionModule,
+    FlotaModule,
+    ZonaModule
     
   ],
   controllers: [AppController],

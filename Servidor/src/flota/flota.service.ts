@@ -15,9 +15,9 @@ export class FlotaService {
   create(createFlotaDto: CreateFlotaDto) {
     return 'This action adds a new flota';
   }
-
-  findAll() {
-    return `This action returns all flota`;
+  async findAll() {
+    console.log('find all')
+    return await this.flotaModel.findAll();
   }
 
   async findOne(id: number) {

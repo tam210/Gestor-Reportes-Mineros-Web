@@ -2,6 +2,7 @@ import { Column, Model, Table, ForeignKey, BelongsTo, DataType, PrimaryKey} from
 import { Camion } from 'src/camion/entities/camion.entity';
 import { Carguio } from 'src/carguio/entities/carguio.entity';
 import { Destino } from 'src/destino/entities/destino.entity';
+import { Fecha } from 'src/fecha/entities/fecha.entity';
 import { Flota } from 'src/flota/entities/flota.entity';
 import { Origen } from 'src/origen/entities/origen.entity';
 
@@ -24,13 +25,13 @@ export class Viaje extends Model<Viaje>{
     })
     idcarguio: number;
 
-    @ForeignKey(() => Camion)
+    @ForeignKey(() => Fecha)
     @Column({
         allowNull: false,
         field: 'idfecha',
-        type: DataType.DATE
+        type: DataType.INTEGER
     })
-    idfecha: Date;
+    idfecha: number;
 
 
     @ForeignKey(() => Camion)
@@ -73,13 +74,15 @@ export class Viaje extends Model<Viaje>{
     @BelongsTo(() => Carguio, 'idcarguio')
     carguio: Carguio;
 
-    @BelongsTo(() => Carguio, 'idcamion')
+    @BelongsTo(() => Camion, 'idcamion')
     camion: Camion;
 
-    @BelongsTo(() => Carguio, 'idorigen')
+    @BelongsTo(() => Origen, 'idorigen')
     origen: Origen;
 
     @BelongsTo(() => Destino, 'iddestino')
     destino: Destino;
 
+    @BelongsTo(() => Fecha, 'idfecha')
+    fecha: Fecha;
 }
