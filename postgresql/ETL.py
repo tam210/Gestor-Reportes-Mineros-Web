@@ -2,24 +2,29 @@ import pandas as pd
 import psycopg2
 import os
 import shutil
-import subprocess
 
-import random
+
 
 def lectura(archivo, cursor):
-    current_dir = os.path.dirname(os.path.realpath(__file__)) 
-    filename = os.path.join(current_dir, archivo) 
-    df = pd.read_csv(filename, delimiter=";", encoding='latin-1')
+    #carpeta del proyecto
+    carpeta = os.getcwd()
+
+    #carpeta en la que se encuentra los archivos guardados
+    carpeta = carpeta + str("\postgresql\Pendientes")
+
+    filename = os.path.join(carpeta, archivo) 
+    df = pd.read_csv(filename, delimiter=";", encoding='utf-8')
     df = df.dropna()
     insertarFlota(cursor,df)
     insertarCamion(cursor,df)
     insertarRajo(cursor,df)
     insertarDestino(cursor,df)
+    insertarFecha(cursor,df)
     insertarZona(cursor,df)
     insertarOrigen(cursor,df)
     insertarCarguio(cursor,df)
-    insertarFecha(cursor,df)
     insertarViaje(cursor,df)
+    planes(archivo, df, cursor)
 
 def buscarID(tabla,columna,cursor,idBuscar, dato):
     quer = str("SELECT "+idBuscar+" FROM "+tabla+" WHERE "+columna+" = '"+str(dato)+"'")
@@ -49,11 +54,25 @@ def buscarIdViaje(cursor,idcarguio,idfecha,idcamion,idorigen,iddestino):
         # Devuelve el id
         return [a[0],1]
 
+def buscarIdPlan(cursor,idzona,idfecha):
+    quer = str("SELECT idKpi FROM kpi WHERE idzona = "+str(idzona)+" and idfecha =" + str(idfecha))
+    cursor.execute(quer)
+    a = cursor.fetchone()
+    if a == None:
+        query = "SELECT COUNT(*) FROM kpi"
+        cursor.execute(query)
+        a = cursor.fetchone()
+        # no esta en la base de datos y se le crea un nuevo id
+        return [a[0],0]
+    else:
+        # Devuelve el id
+        return [a[0],1]
+
 def insertarFlota(cursor,dataFrame):
     #--------ETL tabla Flota--------
     flota = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
+    columnas = ["Carguio","Camión","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
     flota = flota.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     flota['Flota'] = flota['Flota'].drop_duplicates()
@@ -86,7 +105,7 @@ def insertarCamion(cursor,dataFrame):
     columnas = ["Carguio","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
     camion = camion.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
-    camion = camion.rename(columns={'Cami¢n':'patente'})
+    camion = camion.rename(columns={'Camión':'patente'})
     camion['patente'] = camion['patente'].drop_duplicates()
     camion = camion.dropna()
     #asignacion del ID
@@ -104,8 +123,6 @@ def insertarCamion(cursor,dataFrame):
         y = buscarID("flota","nombre",cursor,"idflota",x)
         if y[1] == 1:
             idsFlota.append(y[0])
-        else:
-            print("si")
     
     camion['idcamion'] = idsCamion
     camion['idflota'] = idsFlota
@@ -124,7 +141,7 @@ def insertarRajo(cursor,dataFrame):
     #--------ETL tabla Rajo--------
     Rajo = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Flota","Fecha"]
+    columnas = ["Carguio","Camión","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Flota","Fecha"]
     Rajo = Rajo.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     Rajo['Rajo'] = Rajo['Rajo'].drop_duplicates()
@@ -153,7 +170,7 @@ def insertarDestino(cursor,dataFrame):
     #--------ETL tabla Destino--------
     Destino = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Flota","Tonelaje","Ciclos","Fecha"]
+    columnas = ["Carguio","Camión","Material","Origen","Zona","Flota","Tonelaje","Ciclos","Fecha"]
     Destino = Destino.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     Destino = Destino.rename(columns={'Destino':'nombre'})
@@ -174,8 +191,6 @@ def insertarDestino(cursor,dataFrame):
         y = buscarID("Rajo","nombre",cursor,"idrajo",x)
         if y[1] == 1:
             idsRajo.append(y[0])
-        else:
-            print("si")
     
     Destino['iddestino'] = idsDestino
     Destino['idrajo'] = idsRajo
@@ -194,7 +209,7 @@ def insertarZona(cursor,dataFrame):
     #--------ETL tabla Zona--------
     zona = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Origen","Flota","Destino","Tonelaje","Ciclos","Fecha"]
+    columnas = ["Carguio","Camión","Material","Origen","Flota","Destino","Tonelaje","Ciclos","Fecha"]
     zona = zona.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     zona = zona.rename(columns={'Zona':'nombre'})
@@ -215,8 +230,6 @@ def insertarZona(cursor,dataFrame):
         y = buscarID("Rajo","nombre",cursor,"idrajo",x)
         if y[1] == 1:
             idsRajo.append(y[0])
-        else:
-            print("si")
     
     zona['idzona'] = idszona
     zona['idrajo'] = idsRajo
@@ -235,7 +248,7 @@ def insertarOrigen(cursor,dataFrame):
     #--------ETL tabla Origen--------
     Origen = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Flota","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
+    columnas = ["Carguio","Camión","Material","Flota","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
     Origen = Origen.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     Origen = Origen.rename(columns={'Origen':'nombre'})
@@ -276,7 +289,7 @@ def insertarCarguio(cursor,dataFrame):
     #--------ETL tabla Carguio--------
     Carguio = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Flota","Cami¢n","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
+    columnas = ["Flota","Camión","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Fecha"]
     Carguio = Carguio.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     Carguio['Carguio'] = Carguio['Carguio'].drop_duplicates()
@@ -306,7 +319,7 @@ def insertarFecha(cursor,dataFrame):
     #--------ETL tabla Fecha--------
     Fecha = dataFrame
     # Eliminar Columnas inncesarias
-    columnas = ["Carguio","Cami¢n","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Flota"]
+    columnas = ["Carguio","Camión","Material","Origen","Zona","Destino","Tonelaje","Ciclos","Rajo","Flota"]
     Fecha = Fecha.drop(columnas, axis=1)
     # Eliminar filas repetidas y duplicadas
     Fecha['Fecha'] = Fecha['Fecha'].drop_duplicates()
@@ -325,7 +338,6 @@ def insertarFecha(cursor,dataFrame):
     orden = ['idFecha','Fecha']
     Fecha = Fecha[orden]
     Fecha = Fecha.rename(columns={'Fecha':'fecha'})
-
     # Inserte en la BD
     tabla = 'Fecha'
     insert_query = "INSERT INTO {} ({}) VALUES (%s, %s)".format(tabla, ", ".join(Fecha.columns))
@@ -339,7 +351,7 @@ def insertarViaje(cursor,dataFrame):
     columnas = ["Zona","Flota","Rajo"]
     Viaje = Viaje.drop(columnas, axis=1)
     # Cambiar nombre a la columna camion
-    Viaje = Viaje.rename(columns={'Cami¢n':'camion'})
+    Viaje = Viaje.rename(columns={'Camión':'camion'})
     #asignacion del ID
     idsCargio = []
     idsFecha = []
@@ -349,7 +361,6 @@ def insertarViaje(cursor,dataFrame):
     idsViaje = []
     suma = 0
     for index, row in Viaje.iterrows():
-        z = 0
         idCarguio = buscarID("Carguio","nombre",cursor,"idCarguio",row["Carguio"])
         
         idFecha = buscarID("Fecha","fecha",cursor,"idFecha",row["Fecha"])
@@ -370,7 +381,6 @@ def insertarViaje(cursor,dataFrame):
             idsViaje.append(y[0]+suma)
             suma += 1
         else:
-            print("si")
             Viaje = Viaje.drop(index)
         
     Viaje['idCarguio'] = idsCargio
@@ -393,6 +403,8 @@ def insertarViaje(cursor,dataFrame):
 
     Viaje['TonelajeReal'] = pd.to_numeric(Viaje['TonelajeReal'], errors='coerce')
     Viaje['TonelajeReal'] = Viaje['TonelajeReal'].round().astype(int)
+    Viaje['TonelajeReal'] = Viaje['TonelajeReal'].div(1000)
+    Viaje["Tonelaje"] = Viaje['TonelajeReal'].copy()
 
     orden = ['idViaje','idCarguio','idFecha','idCamion','idOrigen','idDestino','Ciclos','Tonelaje','TonelajeReal','Material']
     Viaje = Viaje[orden]
@@ -403,81 +415,117 @@ def insertarViaje(cursor,dataFrame):
 
     cursor.executemany(insert_query, Viaje.values.tolist())
 
-def buscarArchivo():
+def buscarArchivo(cursor):
     #carpeta del proyecto
     carpeta = os.getcwd()
 
     #carpeta en la que se encuentra los archivos guardados
-    carpeta = carpeta + str("\postgresql")
+    carpeta = carpeta + str("\postgresql\Pendientes")
 
     # se crea una lista de todos los archivos dentro de la carpeta
     archivos = os.listdir(carpeta)
 
     for archivo in archivos:
-        if archivo.endswith(".csv"):
-            return archivo
-    vacio = "null"
-    return vacio
-
+        if archivo.endswith(".csv") and archivo != "PlanM_Junio2023_V00.csv":
+            return(archivo)
+    return "vacio"
+            
 def moverArchivo(archivo):
     #carpeta del proyecto
-    carpeta = os.getcwd()
+    carpetaOrigen = os.getcwd()
 
     #carpeta en la que se encuentra los archivos guardados
-    carpeta = carpeta + str("\postgresql")
+    carpeta = carpetaOrigen + str("\postgresql\Pendientes")
 
     rutaActual = os.path.join(carpeta,archivo)
 
-    destino = carpeta + str("\Procesados")
+    destino = carpetaOrigen + str("\postgresql\Procesados")
 
     shutil.move(rutaActual,destino)
 
-def ejecutar_script_con_parametro(script_path, parametro):
-    subprocess.run(["python", script_path, parametro])
+def planes(archivo, dataFrame, cursor):
+    #--------ETL tabla Kpi--------
+    zonas = dataFrame
+    # Eliminar Columnas inncesarias
+    columnas = ["Carguio","Camión","Material","Origen","Flota","Destino","Tonelaje","Ciclos","Fecha","Rajo"]
+    zonas = zonas.drop(columnas, axis=1)
+    # Eliminar filas repetidas y duplicadas
+    zonas = zonas.rename(columns={'Zona':'nombre'})
+    zonas['nombre'] = zonas['nombre'].drop_duplicates()
+    zonas = zonas.dropna()
+    #asignacion del ID
+    idszona = []
+    for x in zonas["nombre"]:
+        y = buscarID("zona","nombre",cursor,"idzona",x)
+        if y[1] == 1:
+            idszona.append(y[0])
+    zonas['idzona'] = idszona
+    dia = archivo[:2]
+    mes = archivo[2:4]
+    año = archivo[4:8]
+    fecha = str(dia)+"-"+mes+"-"+año
+    fechaid = buscarID("fecha","fecha",cursor,"idfecha",fecha)
+    dia = int(dia)
+    dia -= 1
+    current_dir = os.path.dirname(os.path.realpath(__file__)) 
+    filename = os.path.join(current_dir, "PlanM_Junio2023_V00.csv") 
+    df = pd.read_csv(filename, delimiter=",",header=None ,encoding='utf-8')
+    df = df.dropna()
+    plan = []
+    idskpi = []
+    suma = 0
+    for index, row in zonas.iterrows():
+        if row["nombre"][0] == "F":
+            # FASE 7 Rajo Esperanza
+            if row["nombre"] == "FASE 7":
+                plan.append(df.iloc[dia,53])
+            # Fase 10 Rajo Esperanza
+            elif row["nombre"] == "FASE 10":
+                plan.append(df.iloc[dia,75])
+            # F03 ESPSUR Rajo Esperanza Sur 
+            elif row["nombre"] == "F03 ESPSUR":
+                plan.append(df.iloc[dia,73])
+            # F02 ESPSUR Rajo Sur
+            elif row["nombre"] == "F02 ESPSUR":
+                plan.append(df.iloc[dia,72])
+            # F02 LLA Rajo Llano
+            elif row["nombre"] == "F02 LLA":
+                plan.append(df.iloc[dia,85])
+            # F01 LLA Rajo Llano
+            elif row["nombre"] == "F01 LLA":
+                plan.append(df.iloc[dia,84])
+            # FASE 04 ENC Rajo Encuentro
+            elif row["nombre"] == "FASE 04 ENC":
+                plan.append(df.iloc[dia,74])
+            # FASE 8 Rajo Esperanza
+            elif row["nombre"] == "FASE 8":
+                plan.append(df.iloc[dia,21])      
+        else:
+            plan.append(0)
+        idkpi = buscarIdPlan(cursor,row["idzona"],fechaid[0])
+        if idkpi[1] == 0:
+            idskpi.append(idkpi[0]+suma)
+            suma += 1
+    zonas['esperado'] = plan
+    zonas['idfecha'] = fechaid[0]
+    zonas['idkpi'] = idskpi
+    zonas = zonas.drop('nombre',axis=1)
+    orden = ['idkpi','idzona','idfecha','esperado']
+    zonas = zonas[orden]
 
-def aleatorio(cursor):
-    
-    quer = str("SELECT fecha.IDfecha, zona.idzona, SUM (viaje.tonelajereal) as real FROM viaje JOIN origen ON viaje.idorigen = origen.idorigen JOIN zona ON origen.idzona = zona.idzona JOIN rajo ON rajo.idrajo = zona.idrajo JOIN fecha ON fecha.idfecha = viaje.idfecha GROUP BY fecha.idfecha, zona.idzona,rajo.idrajo ORDER BY fecha.idfecha,zona.idzona")
-    cursor.execute(quer)
-    a = cursor.fetchall()
-    kpi = pd.DataFrame(a,columns=['idfecha','idzona','real'])
-    ids = []
-    esperado = []
-    idn = 0
-    for valor in kpi['real']:
-        numero = random.randint(-10,10)
-        porcentaje = 100 + numero
-        nuevo = valor*porcentaje/100
-        esperado.append(nuevo)
-        ids.append(idn)
-        idn += 1
-    kpi['idkpi'] = ids
-    kpi['esperado'] = esperado
-    kpi = kpi.drop('real',axis=1)
-    orden = ['idkpi','idfecha','idzona','esperado']
-    kpi = kpi[orden]
+    # Inserte en la BD
     tabla = 'kpi'
-    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s)".format(tabla, ", ".join(kpi.columns))
+    insert_query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s)".format(tabla, ", ".join(zonas.columns))
 
-    cursor.executemany(insert_query, kpi.values.tolist())
-
-
-
+    cursor.executemany(insert_query, zonas.values.tolist())
 contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
-
-archivo = buscarArchivo()
-
-if archivo != "null":
+archivo = buscarArchivo(cur)
+if archivo != "vacio":
     lectura(archivo,cur)
     moverArchivo(archivo)
 
-    python = "postgresql\\ActualizacionReporte.py"
-    parametro = archivo
-
-    ejecutar_script_con_parametro(python, parametro)
-aleatorio(cur)
 conexion.commit()
 conexion.close()
 
