@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register-user.dto';
 import { CreateUsuarioDto } from 'src/usuario/dto/create-usuario.dto';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { RolDto } from './dto/rol.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,6 @@ export class AuthService {
         const userType = user.tipousuario;
         return {token: this.jwtService.sign(payload), user:{validEmail:true, validPassword:true, userType:user.tipousuario, userActive:true}};
     }
-
     async register(registerDto: RegisterDto){
         const { email, password, name, lastName, userType} = registerDto;
         let tipo;
@@ -44,6 +44,31 @@ export class AuthService {
         }
         const newUser: CreateUsuarioDto= { correo:email, pass:password, nombre:name, apellido:lastName, tipousuario:tipo };
         return { validEmail: true, validType: true , user:this.usuarioService.create(newUser)};
+    }
+
+    async obtenerRol(rolDto: RolDto){
+        const token = rolDto.token;
+        const decoded = this.jwtService.decode(token);
+
+        // Verifica que el token sea válido y que tenga el tipo de usuario en el payload
+        if (!decoded || !decoded.hasOwnProperty('tipousuario')) {
+        console.log("El payload no es válido (no existe tipousuarioo)");
+            return {
+                tipoUsuario: "Rol no válido (error con payload)"
+            };
+        }
+
+        const tipoUsuario = decoded['tipousuario'];
+        let tipoUsuarioString = "";
+        if (tipoUsuario==0){
+            tipoUsuarioString = "Administrador";
+        }else if(tipoUsuario==1){
+            tipoUsuarioString = "Usuario";
+        }
+        console.log(tipoUsuarioString)
+        return {
+            tipo_usuario: tipoUsuarioString
+        }
     }
 
 }
