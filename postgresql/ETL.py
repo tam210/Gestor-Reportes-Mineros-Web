@@ -404,6 +404,7 @@ def insertarViaje(cursor,dataFrame):
     Viaje['TonelajeReal'] = pd.to_numeric(Viaje['TonelajeReal'], errors='coerce')
     Viaje['TonelajeReal'] = Viaje['TonelajeReal'].round().astype(int)
     Viaje['TonelajeReal'] = Viaje['TonelajeReal'].div(1000)
+    Viaje["Tonelaje"] = Viaje['TonelajeReal'].copy()
 
     orden = ['idViaje','idCarguio','idFecha','idCamion','idOrigen','idDestino','Ciclos','Tonelaje','TonelajeReal','Material']
     Viaje = Viaje[orden]

@@ -190,7 +190,7 @@ def creacionViews(cursor):
     cursor.execute(ViewRajo)
     cursor.execute(ViewZona)
 
-contra = "codigo16"
+contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 
