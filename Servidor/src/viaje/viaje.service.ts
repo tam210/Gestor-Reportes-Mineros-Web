@@ -62,55 +62,61 @@ export class ViajeService {
 
 
   async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
-    const fechaInicio = updateViajeDto.fechaInicio;
-    const fechaFin = updateViajeDto.fechaFin;
-    const idZona = updateViajeDto.idzona;
+    const fechaInicio = new Date(updateViajeDto.fechaInicio);
+    const fechaFin = new Date(updateViajeDto.fechaFin);
     const idFlota = updateViajeDto.idflota;
-  
-    console.log("entrando...");
+    const idZona = updateViajeDto.idzona;
   
     const t = await this.viajeModel.sequelize.transaction();
     try {
-      // Encontrar los IDs de viajes que coincidan con las fechas, zona y flota
-      const viajesToUpdate = await this.viajeModel.findAll({
-        include: [
-          {
-            model: this.origenModel,
-            include: [{
-              model: this.zonaModel,
-              where: {
-                idzona: idZona
-              }
-            }],
-          },
-          {
-            model: this.fechaModel,
-            where: {
-              fecha: {
-                [Op.between]: [fechaInicio, fechaFin]
-              },
-            },
-          },
-          {
-            model: this.camionModel,
-            include: [{
-              model: this.flotaModel,
-              where: {
-                idflota: idFlota
-              }
-            }],
-          }
-        ],
+      // Encontrar los IDs de camiones en la flota especificada
+      const camionesEnFlota = await this.camionModel.findAll({
+        attributes: ['idcamion'],
+        where: {
+          idflota: idFlota,
+        },
         transaction: t,
       });
-  
-      if (viajesToUpdate.length === 0) {
+
+      if (camionesEnFlota.length === 0) {
+        throw new NotFoundException('No se encontraron camiones en la flota especificada.');
+      }
+
+      const idsCamiones = camionesEnFlota.map((camion) => camion.getDataValue('idcamion'));
+
+      // Encontrar los IDs de las fechas que estén dentro del rango especificado
+      const fechas = await this.fechaModel.findAll({
+        attributes: ['idfecha'],
+        where: {
+          fecha: {
+            [Op.between]: [fechaInicio, fechaFin],
+          },
+        },
+        transaction: t,
+      });
+
+      if (fechas.length === 0) {
+        throw new NotFoundException('No se encontraron fechas en el rango especificado.');
+      }
+
+      const idsFechas = fechas.map((fecha) => fecha.getDataValue('idfecha'));
+
+      // Encontrar los IDs de viajes que coincidan con las fechas, origen, zona y camiones en la flota
+      const viajesEnCamiones = await this.viajeModel.findAll({
+        attributes: ['idviaje'],
+        where: {
+          idfecha: idsFechas,
+          idcamion: idsCamiones,
+        },
+        transaction: t,
+      });
+
+      if (viajesEnCamiones.length === 0) {
         throw new NotFoundException('No se encontraron viajes con los filtros especificados.');
       }
-  
-      const idsViajes = viajesToUpdate.map((viaje) => viaje.getDataValue('idviaje'));
-      console.log("---------VIAJES---------");
-      console.log(idsViajes);
+
+      const idsViajes = viajesEnCamiones.map((viaje) => viaje.getDataValue('idviaje'));
+
       // Actualizar el tonelaje de los viajes encontrados
       await this.viajeModel.update(
         {
@@ -123,14 +129,14 @@ export class ViajeService {
           transaction: t,
         },
       );
-  
+
       await t.commit();
       return { message: 'Tonelaje actualizado exitosamente.' };
     } catch (error) {
       await t.rollback();
       throw error;
-    }
-  }
+      }
+    }
   
   
 

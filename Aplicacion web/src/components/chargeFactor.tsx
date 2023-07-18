@@ -36,6 +36,7 @@ const sendRequest = async (request)=>{
             Authorization: 'Bearer '+localStorage.getItem('token')
         }
     }
+    console.log(request)
     const response = await axios.patch(ENDPOINT,request,config)
     console.log(response.data)
     return response.data
