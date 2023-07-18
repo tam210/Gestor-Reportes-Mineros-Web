@@ -6,7 +6,7 @@ import { LoginResponse, UserLoginResponse } from '@/config/interfaces';
 
 function Login() {
   const router = useRouter();
-
+  localStorage.removeItem('token')
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validEmail, setValidEmail] = useState(true);

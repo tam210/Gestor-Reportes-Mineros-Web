@@ -9,7 +9,6 @@ const validate = async ()=>{
       'token':localStorage.getItem('token')
   }
   const response = await axios.post(ENDPOINT,body)
-  console.log(response.data.tipo_usuario)
   return response.data.tipo_usuario ==="Administrador"
 }
 

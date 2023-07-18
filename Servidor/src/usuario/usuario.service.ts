@@ -46,15 +46,13 @@ export class UsuarioService {
       console.log("NUEVO USUARIO")
       // Asignar ID del usuario a la solicitud
       const solicitudData = new CreateSolicitudDto();
-      
       solicitudData.idusuario = nuevoUsuario.id;
       solicitudData.fecha = new Date();
-
       // Crear solicitud
-      const nuevaSolicitud = await this.solicitudModel.create(solicitudData, { transaction: t });
-
+      const nuevaSolicitud = await this.solicitudModel.create
+      (solicitudData, { transaction: t });
+      console.log('commit')
       await t.commit();
-
       return {
         usuario: nuevoUsuario,
         solicitud: nuevaSolicitud,

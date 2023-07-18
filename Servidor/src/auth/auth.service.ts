@@ -43,7 +43,7 @@ export class AuthService {
             }
         }
         const newUser: CreateUsuarioDto= { correo:email, pass:password, nombre:name, apellido:lastName, tipousuario:tipo };
-        return { validEmail: true, validType: true , user:this.usuarioService.create(newUser)};
+        return { validEmail: true, validType: true , user:this.usuarioService.crearUsuarioYSolicitud(newUser)};
     }
 
     async obtenerRol(rolDto: RolDto){
