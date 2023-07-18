@@ -59,6 +59,7 @@ export class ViajeService {
     async updateLoadFactor(updateViajeDto: UpdateViajeDto) {
       const fechaInicio = updateViajeDto.fechaInicio;
       const fechaFin = updateViajeDto.fechaFin;
+      const origen = updateViajeDto.idorigen;
       const idFlota = updateViajeDto.idflota;
       const idZona = updateViajeDto.idzona;
       console.log("entrando...");
@@ -78,7 +79,7 @@ export class ViajeService {
         }
   
         const idsCamiones = camionesEnFlota.map((camion) => camion.getDataValue('idcamion'));
-        console.log("------------------");
+        console.log("---------FLOTAS---------");
         console.log(idsCamiones);
   
         // Encontrar los IDs de las fechas que estén dentro del rango especificado
@@ -91,22 +92,20 @@ export class ViajeService {
           },
           transaction: t,
         });
-        
-
-  
+          
         if (fechas.length === 0) {
           throw new NotFoundException('No se encontraron fechas en el rango especificado.');
         }
   
-        const idsFechas = fechas.map((fecha) => fecha.getDataValue('id'));
-        console.log("------------------");
+        const idsFechas = fechas.map((fecha) => fecha.getDataValue('idfecha'));
+        console.log("--------FECHAS----------");
         console.log(idsFechas);
         // Encontrar los IDs de viajes que coincidan con las fechas, origen, zona y camiones en la flota
         const viajesEnCamiones = await this.viajeModel.findAll({
           attributes: ['idviaje'],
           where: {
             idfecha: idsFechas,
-            //idorigen: origen,
+            idorigen: origen,
             idcamion: idsCamiones,
             //idzona: idZona,
           },
@@ -118,7 +117,7 @@ export class ViajeService {
         }
   
         const idsViajes = viajesEnCamiones.map((viaje) => viaje.getDataValue('idviaje'));
-        console.log("------------------");
+        console.log("---------VIAJESS---------");
         console.log(idsViajes);
         // Actualizar el tonelaje de los viajes encontrados
         await this.viajeModel.update(
