@@ -61,7 +61,7 @@ function Users() {
 
   const blockUser = async ()=>{
     if(rowSelect!==null){
-      await sendUpdate({"id":rowSelect.id,"estadoText":"Bloqueado"})
+      await sendUpdate({"id":rowSelect.id,"estadoText":"Rechazado"})
       handleUsers().then(rowData=>setRows(rowData))
     }
   }

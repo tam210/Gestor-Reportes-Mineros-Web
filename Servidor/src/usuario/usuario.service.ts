@@ -13,8 +13,7 @@ import { Op } from 'sequelize';
 export enum EstadoUsuario {
   Rechazado = 0,
   Pendiente = 1,
-  Aprobado = 2,
-  Eliminado = 3
+  Aprobado = 2
 }
 
 @Injectable()
@@ -25,18 +24,6 @@ export class UsuarioService {
     @InjectModel(Usuario) private usuarioModel: typeof Usuario,
     @InjectModel(Solicitud) private readonly solicitudModel: typeof Solicitud,
   ){}
-
-  async create(createUsuarioDto: CreateUsuarioDto) {
-    console.log('createUsuarioDto')
-    const usuario = await this.usuarioModel.create({
-      nombre: createUsuarioDto.nombre,
-      apellido: createUsuarioDto.apellido,
-      correo: createUsuarioDto.correo,
-      pass: createUsuarioDto.pass,
-      tipousuario: createUsuarioDto.tipousuario
-    });
-    return usuario;
-  }
 
   async crearUsuarioYSolicitud(usuarioData: CreateUsuarioDto): Promise<any> {
     const t = await this.usuarioModel.sequelize.transaction();
@@ -65,28 +52,18 @@ export class UsuarioService {
   }
 
   async decidirUsuario(usuarioData: AprobarRechazarUsuarioDto): Promise<Usuario> {
-    const decision = usuarioData.estado
+    const decision = usuarioData.decision
     const usuario = await this.usuarioModel.findByPk(usuarioData.id);
+    console.log(usuarioData,decision)
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    if(decision==1){ //aprobado = 1, rechazado = 0
+    if(decision){ //aprobado = 1, rechazado = 0
       usuario.estado = EstadoUsuario.Aprobado;
-    }else if (decision==0){
-      usuario.estado = EstadoUsuario.Rechazado;      
     }else{
-      throw new NotFoundException('Estado no existente');
+      usuario.estado = EstadoUsuario.Rechazado;      
     }
     return usuario.save();
-  }
-  
-  async eliminarUsuario(id: string): Promise<void> {
-    const usuario = await this.usuarioModel.findByPk(id);
-    if (!usuario) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-    usuario.estado = 4; // Cambiar el estado a "eliminado"
-    await usuario.save();
   }
 
 
@@ -103,8 +80,7 @@ export class UsuarioService {
         "Usuario":1,
         "Rechazado":0,
         "Pendiente":1,
-        "Aprobado":2,
-        "Bloqueado":3
+        "Aprobado":2
       }
 
       updateUsuarioDto.tipousuario = diccionario[updateUsuarioDto.tipousuario]
@@ -145,7 +121,7 @@ export class UsuarioService {
             this.usuarioModel.sequelize.literal("CASE WHEN tipousuario = 0 THEN 'Administrador' WHEN tipousuario = 1 THEN 'Usuario' END"),'tipousuario', //Convierte el numero del tipo usuario a texto para mostrar
           ],
           [
-            this.usuarioModel.sequelize.literal("CASE WHEN estado = 0 THEN 'Rechazado' WHEN estado = 1 THEN 'Pendiente' WHEN estado = 2 THEN 'Aprobado' WHEN estado = 3 THEN 'Bloqueado' END"),'estado'
+            this.usuarioModel.sequelize.literal("CASE WHEN estado = 0 THEN 'Rechazado' WHEN estado = 1 THEN 'Pendiente' WHEN estado = 2 THEN 'Aprobado' END"),'estado'
           ]
         ]
       },
@@ -153,19 +129,6 @@ export class UsuarioService {
         estado:{
           [Op.not]: 1 //Omite los usuarios con estado pendiente
         }
-      } 
-    } );
-  }
-
-  async findAllWithPassword() {
-    console.log('find all p')
-    return await this.usuarioModel.findAll({ 
-      attributes: { 
-        include: [
-          [
-            this.usuarioModel.sequelize.literal("CASE WHEN tipousuario = 0 THEN 'admin' WHEN tipousuario = 1 THEN 'usuario' WHEN tipousuario = 2 THEN 'pendiente' END"),'tipousuario', //Convierte el numero del tipo usuario a texto para mostrar
-          ]
-        ]
       } 
     } );
   }

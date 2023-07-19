@@ -39,7 +39,7 @@ const sendRequest = async (row, decision) =>{
     id: row.idusuario,
     decision: decision
   }
-  const response = await axios.patch(ENDPOINT, request , token);
+  const response = await axios.patch(ENDPOINT, request , config);
   return response.data; 
 }
 
@@ -76,16 +76,18 @@ function Request() {
     setRowSelect(event.row)
   }
 
-  const approve = () => {
+  const approve = async () => {
     if(rowSelect!==null){
-      sendRequest(rowSelect,true)
+      await sendRequest(rowSelect,true)
     }
+    handleRequest().then((row)=>setRows(row))
   }
 
-  const deny = () => {
+  const deny = async () => {
     if(rowSelect!==null){
-      sendRequest(rowSelect,false)
+      await sendRequest(rowSelect,false)
     }
+    handleRequest().then((row)=>setRows(row))
   }
 
   useEffect( ()=>{

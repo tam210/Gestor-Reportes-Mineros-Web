@@ -75,7 +75,7 @@ function ChargeFactor() {
 
     const obtenerFechaFormateada = fecha => {
         const options = { year: 'numeric' , month: '2-digit', day: '2-digit'};
-        return fecha.toLocaleDateString('en-US', options);
+        return fecha.toLocaleDateString('es-CL', options);
       };
         
     const validToken =( async ()=>{
