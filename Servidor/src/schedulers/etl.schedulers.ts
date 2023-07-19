@@ -5,7 +5,7 @@ export class ETLScheduler {
 
   constructor() {
     // Define el patrón cron para ejecutar la tarea cada día a las 18:00
-    const cronPattern = '0 18 * * *';
+    const cronPattern = '14 01 * * *';
 
     // Crea una nueva instancia de CronJob
     this.job = new CronJob(cronPattern, () => this.runETL());

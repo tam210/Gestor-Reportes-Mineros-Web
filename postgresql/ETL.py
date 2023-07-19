@@ -7,7 +7,7 @@ import shutil
 
 def lectura(archivo, cursor):
     #carpeta del proyecto
-    carpeta = os.getcwd()
+    carpeta = os.path.dirname(os.getcwd())
 
     #carpeta en la que se encuentra los archivos guardados
     carpeta = carpeta + str("\postgresql\Pendientes")
@@ -417,7 +417,7 @@ def insertarViaje(cursor,dataFrame):
 
 def buscarArchivo(cursor):
     #carpeta del proyecto
-    carpeta = os.getcwd()
+    carpeta = os.path.dirname(os.getcwd())
 
     #carpeta en la que se encuentra los archivos guardados
     carpeta = carpeta + str("\postgresql\Pendientes")
@@ -432,7 +432,7 @@ def buscarArchivo(cursor):
             
 def moverArchivo(archivo):
     #carpeta del proyecto
-    carpetaOrigen = os.getcwd()
+    carpetaOrigen = os.path.dirname(os.getcwd())
 
     #carpeta en la que se encuentra los archivos guardados
     carpeta = carpetaOrigen + str("\postgresql\Pendientes")
