@@ -1,12 +1,11 @@
 import { useRouter } from 'next/navigation';
 import DarkModeButton from '@/components/common/darkModeButton';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LoginResponse, UserLoginResponse } from '@/config/interfaces';
 
 function Login() {
   const router = useRouter();
-  localStorage.removeItem('token')
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validEmail, setValidEmail] = useState(true);
@@ -67,6 +66,10 @@ function Login() {
   const handleAccessRequest = ()=>{
     router.push('/auth/register')
   }
+
+  useEffect(()=>{
+    localStorage.removeItem('token')
+  })
 
   return (
     <div className="container mx-auto min-h-screen text-center">

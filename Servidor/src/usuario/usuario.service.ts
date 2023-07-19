@@ -59,6 +59,7 @@ export class UsuarioService {
       };
     } catch (error) {
       await t.rollback();
+      console.log(error)
       throw error;
     }
   }
