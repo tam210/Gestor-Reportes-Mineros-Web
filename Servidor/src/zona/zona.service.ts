@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateZonaDto } from './dto/create-zona.dto';
 import { UpdateZonaDto } from './dto/update-zona.dto';
+import { Zona } from './entities/zona.entity';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class ZonaService {
+
+  constructor(
+    @InjectModel(Zona)
+    private zonaModel: typeof Zona
+  ){
+
+  }
   create(createZonaDto: CreateZonaDto) {
     return 'This action adds a new zona';
   }
 
-  findAll() {
-    return `This action returns all zona`;
+  async findAll() {
+    console.log('find all')
+    return await this.zonaModel.findAll();
   }
 
   findOne(id: number) {

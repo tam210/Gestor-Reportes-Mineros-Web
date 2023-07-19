@@ -1,5 +1,6 @@
+
 export class CreateSolicitudDto {
-    idusuario: number;
+    idusuario: string;
     fecha: Date;
   }
   

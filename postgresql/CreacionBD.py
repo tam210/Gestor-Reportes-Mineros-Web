@@ -144,11 +144,11 @@ def creacionTablasUsuarios(cursor):
 
     tabla_solicitudes = """DROP TABLE IF EXISTS solicitud;
     CREATE TABLE solicitud(
-        idSolicitud INT NOT NULL,
-        correo text NOT NULL,
+        idSolicitud UUID NOT NULL DEFAULT uuid_generate_v4(),
+        idUsuario UUID NOT NULL,
         fecha date,
         PRIMARY KEY(idSolicitud),
-        FOREIGN KEY(correo) REFERENCES usuario(correo))"""
+        FOREIGN KEY(idUsuario) REFERENCES usuario(id))"""
     
 
     cursor.execute(y)
@@ -160,7 +160,7 @@ def creacionViews(cursor):
     ViewRajo = """CREATE VIEW prekpirajo AS
 	SELECT rajonombre, fecha, idfecha, SUM(real) AS rajoreal, SUM(esperado) AS esperadokpi
 	FROM (SELECT viaje.idfecha, fecha.fecha, zona.idrajo, rajo.nombre AS rajonombre, 
-			zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+			zona.nombre AS zonanombre, SUM (viaje.tonelaje) as real, kpi.esperado
 		FROM viaje
 			JOIN origen ON viaje.idorigen = origen.idorigen
 			JOIN zona ON origen.idzona = zona.idzona
@@ -176,7 +176,7 @@ def creacionViews(cursor):
 
     ViewZona = """CREATE VIEW prekpizona AS
 	SELECT fecha.fecha, viaje.idfecha, zona.idrajo, rajo.nombre AS rajonombre, kpi.idzona, 
-		zona.nombre AS zonanombre, SUM (viaje.tonelajereal) as real, kpi.esperado
+		zona.nombre AS zonanombre, SUM (viaje.tonelaje) as real, kpi.esperado
 	FROM viaje
 		JOIN origen ON viaje.idorigen = origen.idorigen
 		JOIN zona ON origen.idzona = zona.idzona
@@ -190,7 +190,7 @@ def creacionViews(cursor):
     cursor.execute(ViewRajo)
     cursor.execute(ViewZona)
 
-contra = "codigo16"
+contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
 

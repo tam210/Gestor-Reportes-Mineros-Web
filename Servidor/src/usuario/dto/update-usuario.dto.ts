@@ -5,6 +5,6 @@ import { CreateUsuarioDto } from './create-usuario.dto';
 //Esto, porque puede actualizar ALGUNOS
 //campos del usuario, no todos
 export class UpdateUsuarioDto extends PartialType(CreateUsuarioDto) {
-    name: string;
-    password: string;
+    id: string
+    estadoText?: string
 }

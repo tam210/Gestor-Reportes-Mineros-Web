@@ -10,18 +10,19 @@ import { Usuario } from 'src/usuario/entities/usuario.entity';
 export class Solicitud extends Model<Solicitud>{
     @Column({
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataType.UUIDV4,
         allowNull: false,
+        type: DataType.UUID
     })
-    idsolicitud: number;
+    idsolicitud: string;
 
     @ForeignKey(() => Usuario)
     @Column({
         allowNull: false,
         field: 'idusuario',
-        type: DataType.INTEGER
+        type: DataType.UUID
     })
-    idusuario: number;
+    idusuario: string;
 
     @Column({
         allowNull: false,
