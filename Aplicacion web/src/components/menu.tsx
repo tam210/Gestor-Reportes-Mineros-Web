@@ -18,7 +18,7 @@ const validate = async ()=>{
 
 function Menu() {
     const router=useRouter();
-    const [token,setToken] = useState(localStorage.getItem('token'));
+    const [token,setToken] = useState('');
     const [validUser,setValidUser]= useState(true);
     
     const toReports = () => {

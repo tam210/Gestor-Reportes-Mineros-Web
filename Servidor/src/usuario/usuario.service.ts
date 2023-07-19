@@ -82,9 +82,10 @@ export class UsuarioService {
         "Pendiente":1,
         "Aprobado":2
       }
-
+      console.log(updateUsuarioDto)
       updateUsuarioDto.tipousuario = diccionario[updateUsuarioDto.tipousuario]
-      if(updateUsuarioDto.estadoText!==null){
+      updateUsuarioDto.estado = diccionario[updateUsuarioDto.estado]
+      if(updateUsuarioDto.estadoText!==undefined){
         const user ={
           "id":updateUsuarioDto.id,
           "estado":diccionario[updateUsuarioDto.estadoText]
@@ -92,7 +93,7 @@ export class UsuarioService {
         await usuarioExistente.update(user)
         return usuarioExistente 
       }
-
+      console.log('await')
       // Verificar si se está actualizando a un correo existente
       if (updateUsuarioDto.correo && updateUsuarioDto.correo !== usuarioExistente.correo) {
         const usuarioConMismoCorreo = await this.usuarioModel.findOne({
@@ -102,7 +103,7 @@ export class UsuarioService {
           throw new ConflictException('El correo proporcionado ya está en uso');
         }
       }
-  
+      
       await usuarioExistente.update(updateUsuarioDto);
   
       return usuarioExistente;

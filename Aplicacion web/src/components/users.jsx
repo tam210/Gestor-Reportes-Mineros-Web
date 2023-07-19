@@ -53,6 +53,7 @@ function Users() {
     for (let index = 0; index < update.length; index++) {
       let user = update[index]
       if (changes.includes(user['correo'])){
+        console.log(update[index])
         sendUpdate(user)
       }
     }
