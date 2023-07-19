@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ThreeDots from "./common/ThreeDots";
@@ -10,6 +10,7 @@ import { startOfWeek, endOfWeek } from 'date-fns';
 import ExpireSession from './common/expireSession';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';
+import { parse } from 'json2csv';
 
 const handleReports = async (params) => {
     const ENDPOINT = 'http://localhost:3001/reporte/';
@@ -47,6 +48,7 @@ function Report() {
     const [type,setType] =useState('diary');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [validUser,setValidUser]= useState(true);
+    const { parse } = require('json2csv');
     let params = {}
     let token = localStorage.getItem('token');
 
@@ -108,6 +110,7 @@ function Report() {
             const fechas = obtenerInicioFinSemana()
             params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
             params['fechaFin']=obtenerFechaFormateada(fechas.fin)
+            console.log(params)
         }if(type==="monthly"){
             const fechas = obtenerInicioFinMes(selectedDate,type)
             params['fechaInicio']=obtenerFechaFormateada(fechas.inicio)
@@ -132,6 +135,26 @@ function Report() {
             setValidUser(false)
         }
     })
+
+    const toCSV = ()=>{
+        const csv = parse(rows);
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, 'export.csv');
+        } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", 'export.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
 
     useEffect(()=>{
         validToken()
@@ -162,17 +185,17 @@ function Report() {
                                             <option value="annual">Anual</option>
                                         </select>
                                     </label>
-                                    <label className="flex md:mx-2 lg:mx-10">
+                                    {type!=='weekly'&&<label className="flex md:mx-2 lg:mx-10">
                                         <span className='dark:text-white mx-2'>Filtro por fecha</span>
                                         <DatePicker selected={selectedDate}
                                             onChange={handleDateChange}
                                             dateFormat="dd/MM/yyyy"
                                             placeholderText="Fecha inicio"
                                             className='w-36'/>
-                                    </label>
+                                    </label>}
                                 </div>
                                 <button className='button flex' onClick={findReport}>Buscar</button>
-                                <button className='button flex'>ExportarCSV</button>
+                                <button className='button flex' onClick={toCSV}>ExportarCSV</button>
                             </div>
                             <div className='flex lg:mx-auto dark:bg-gray-400'>
                             <Box
