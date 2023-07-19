@@ -144,7 +144,7 @@ def creacionTablasUsuarios(cursor):
 
     tabla_solicitudes = """DROP TABLE IF EXISTS solicitud;
     CREATE TABLE solicitud(
-        idSolicitud INT NOT NULL,
+        idSolicitud UUID NOT NULL DEFAULT uuid_generate_v4(),
         idUsuario UUID NOT NULL,
         fecha date,
         PRIMARY KEY(idSolicitud),
