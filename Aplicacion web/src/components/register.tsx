@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import TopBar from './common/topBar';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import DarkModeButton from './common/darkModeButton';
 
 function Register() {
     const [email,setEmail]=useState('');
@@ -62,6 +63,9 @@ function Register() {
 
     return (
         <div className='flex flex-col h-screen w-full items-center dark:bg-black'>
+            <div className='flex flex-row-reverse w-full'>
+                <DarkModeButton/>
+            </div>
             <div className='flex relative flex-col mt-4 items-center sm:mt-10'>
                 <div className='max-w-[150px] md:max-w-[250px] dark:invert'>
                     <img src="/images/User.png" className='h-full w-auto'/>

@@ -71,9 +71,6 @@ export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer){
     consumer
     .apply(JwtMiddleware)
-    //que se pueda crear un usuario sin un token
-    // .exclude({ path: 'usuario', method: RequestMethod.POST })
-
-    .forRoutes('usuario', 'reporte', 'solicitud');
+    .forRoutes('usuario', 'reporte', 'solicitud','viaje');
   }
 }

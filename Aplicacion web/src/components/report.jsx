@@ -40,7 +40,7 @@ function Report() {
         { field: 'rajoreal', headerName: 'Tonelaje real', minWidth: 200 },
         { field: 'esperadokpi', headerName: 'Tonelaje esperado', minWidth: 200 },
         { field: 'kpi', headerName: 'KPI(%)',cellClassName: (params)=>{ 
-            return clsx('super-app',{ positive: params.value <100, negative: params.value >=100,})},width:80}
+            return clsx('super-app',{ excelente:params.value>=110, bueno: params.value<110, insuficiente: params.value<97, malo: params.value<95})},width:80}
       ];
       
     const [rows,setRows] = useState([])

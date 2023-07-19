@@ -427,8 +427,8 @@ def buscarArchivo(cursor):
 
     for archivo in archivos:
         if archivo.endswith(".csv") and archivo != "PlanM_Junio2023_V00.csv":
-            return(archivo)
-    return "vacio"
+            lectura(archivo,cursor)
+            moverArchivo(archivo)
             
 def moverArchivo(archivo):
     #carpeta del proyecto
@@ -521,11 +521,7 @@ def planes(archivo, dataFrame, cursor):
 contra = "postgres"
 conexion = psycopg2.connect(host="localhost", database="mineriaDB", user="postgres", password=contra)
 cur = conexion.cursor()
-archivo = buscarArchivo(cur)
-if archivo != "vacio":
-    lectura(archivo,cur)
-    moverArchivo(archivo)
-
+buscarArchivo(cur)
 conexion.commit()
 conexion.close()
 
