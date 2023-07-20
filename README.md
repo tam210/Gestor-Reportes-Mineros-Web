@@ -12,12 +12,10 @@ El presente proyecto tiene como finalidad desarrollar un sistema de software web
 - [x] Carga periódica de datos (se instaló cron desde la terminal)
 - [x] La consulta de la vista se puede hacer más eficiente, se pueden reducir cláusulas pero no estoy segura o,o (consultar)
 - [x] Actualizar y eliminar usuarios: La actualización se hizo considerando las excepciones de correos repetidos, y la eliminación no consiste en borrar el usuario (sino causaría problemas con las solicitudes por el id manualmente autoincremental) sino que le cambia el estado a 4 (Eliminado), así siempre quedará registrado en el sistema.
+- [x] Actualizar el factor de carga
 
 ### Por realizar
-- [ ] Actualizar el factor de carga
-- [ ] La vista ya está funcionando, pero no se genera a partir del rajo y fechas, sino que se genera la vista de TODOS los registros y después se puede filtrar por rajo y fechas. Consultar si es viable la solución actual o hay que hacer modificaciones.
-
-
+Todas las tareas han sido finalizadas
 
 <p align="center">
   <img width="330" src="docs/assets/github-asset.png">
